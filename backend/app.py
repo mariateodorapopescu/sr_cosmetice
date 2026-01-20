@@ -76,6 +76,17 @@ def hash_password(password):
     """
     return hashlib.sha256(password.encode()).hexdigest()
 
+# Helper: convertește NaN în None pentru JSON valid
+def clean_for_json(obj):
+    """Convertește NaN și inf în None pentru JSON valid"""
+    if isinstance(obj, float):
+        if math.isnan(obj) or math.isinf(obj):
+            return None
+    if isinstance(obj, dict):
+        return {k: clean_for_json(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [clean_for_json(i) for i in obj]
+    return obj
 
 # ============================================================================
 # INIȚIALIZARE BAZĂ DE DATE
