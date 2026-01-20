@@ -13,7 +13,8 @@
 // CONFIGURARE API
 // =============================================================================
 
-const API_BASE_URL = 'http://localhost:5003/api';
+// const API_BASE_URL = 'http://localhost:5003/api';
+const API_BASE_URL = 'https://sr-cosmetice.onrender.com/api';
 
 // =============================================================================
 // OBIECT GLOBAL GLOWUP - Disponibil pentru toate fișierele JS
