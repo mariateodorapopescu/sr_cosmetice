@@ -33,6 +33,7 @@ CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
 
 # Configurare bază de date PostgreSQL
 DB_HOST = os.getenv("DB_HOST", "db")
+DB_HOST = os.getenv("DATABASE_URL", "db")
 DB_NAME = os.getenv("DB_NAME", "postgres")
 DB_USER = os.getenv("DB_USER", "postgres")
 DB_PASS = os.getenv("DB_PASS", "postgres")
