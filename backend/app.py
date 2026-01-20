@@ -43,13 +43,28 @@ DB_PASS = os.getenv("DB_PASS", "postgres")
 
 def get_db_connection():
     """Creează și returnează o conexiune la baza de date."""
-    return psycopg2.connect(
-        host=DB_HOST, 
-        dbname=DB_NAME, 
-        user=DB_USER, 
-        password=DB_PASS
-    )
-
+    # return psycopg2.connect(
+    #     host=DB_HOST, 
+    #     dbname=DB_NAME, 
+    #     user=DB_USER, 
+    #     password=DB_PASS
+    # )
+    # Verifică dacă există DATABASE_URL (pentru Render/producție)
+    database_url = os.environ.get('DATABASE_URL')
+    
+    if database_url:
+        # Render folosește postgres:// dar psycopg2 vrea postgresql://
+        if database_url.startswith('postgres://'):
+            database_url = database_url.replace('postgres://', 'postgresql://', 1)
+        return psycopg2.connect(database_url)
+    else:
+        # Local development (Docker)
+        return psycopg2.connect(
+            host=os.environ.get('DB_HOST', 'db'),
+            database=os.environ.get('DB_NAME', 'glowup'),
+            user=os.environ.get('DB_USER', 'glowup_user'),
+            password=os.environ.get('DB_PASSWORD', 'glowup_password')
+        )
 
 def hash_password(password):
     """
