@@ -113,8 +113,16 @@ function applyColorTheme(themeKey) {
     root.style.setProperty('--shadow-glow', `0 0 30px rgba(${theme.primaryRgb}, 0.3)`);
     root.style.setProperty('--bg-hover', `rgba(${theme.primaryRgb}, 0.1)`);
     
-    // Apply background (respecting dark mode)
-    if (!isDark) {
+    // Icon colors - use accent color!
+    root.style.setProperty('--icon-star-color', theme.primary);
+    root.style.setProperty('--icon-heart-color', theme.primary);
+    root.style.setProperty('--icon-fire-color', theme.primary);
+    root.style.setProperty('--icon-accent-color', theme.primary);
+    
+    // Apply background based on dark/light mode
+    if (isDark && theme.bgMainDark) {
+        root.style.setProperty('--bg-main', theme.bgMainDark);
+    } else if (!isDark) {
         root.style.setProperty('--bg-main', theme.bgMain);
     }
     
@@ -203,29 +211,74 @@ function createThemeSelectorUI() {
  */
 function injectThemeSelectorStyles() {
     const styles = `
+        /* Icon color variables - use accent color */
+        :root {
+            --icon-star-color: var(--color-primary);
+            --icon-heart-color: var(--color-primary);
+            --icon-fire-color: var(--color-primary);
+            --icon-accent-color: var(--color-primary);
+        }
+        
+        /* Apply accent colors to icons */
+        .stat-icon .fa-star,
+        .meta-icon .fa-star,
+        .rec-stats .fa-star {
+            color: var(--icon-star-color) !important;
+        }
+        
+        .stat-icon .fa-heart,
+        .meta-icon .fa-heart,
+        .rec-stats .fa-heart {
+            color: var(--icon-heart-color) !important;
+        }
+        
+        .card-badge .fa-fire,
+        .product-badge .fa-fire,
+        .card-badge .fa-star {
+            color: var(--icon-fire-color) !important;
+        }
+        
+        /* All other icons use accent color */
+        .logo-icon i,
+        .feature-icon i,
+        .title-icon i,
+        .sidebar-title i,
+        .info-icon i,
+        .panel-title i,
+        .empty-icon i,
+        .hover-label i,
+        .btn-icon i {
+            color: var(--icon-accent-color) !important;
+        }
+        
+        /* Input icons slightly muted */
+        .input-icon i {
+            color: var(--color-primary-light) !important;
+        }
+        
         /* Theme Selector */
         .theme-selector {
             position: relative;
         }
         
+        /* Match the style of btn-icon (dark mode toggle) */
         .theme-selector-trigger {
             width: 40px;
             height: 40px;
             border-radius: 50%;
             border: none;
-            background: var(--bg-card);
-            color: var(--text-secondary);
+            background: var(--color-primary);
+            color: var(--text-inverse, #fff);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all var(--transition-base);
-            box-shadow: var(--shadow-sm);
+            font-size: 1rem;
         }
         
         .theme-selector-trigger:hover {
-            background: var(--color-primary);
-            color: white;
+            background: var(--color-primary-dark);
             transform: scale(1.05);
         }
         
@@ -345,6 +398,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.body.classList.contains('dashboard-page')) {
         injectThemeSelectorStyles();
         initThemeSelector();
+        
+        // Listen for dark mode changes and re-apply color theme
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'data-theme') {
+                    const savedTheme = localStorage.getItem('glowup_color_theme') || 'beige';
+                    applyColorTheme(savedTheme);
+                }
+            });
+        });
+        
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-theme']
+        });
     }
 });
 
@@ -360,5 +428,23 @@ if (document.body.classList.contains('auth-page')) {
         root.style.setProperty('--color-primary-rgb', theme.primaryRgb);
         root.style.setProperty('--shadow-glow', `0 0 30px rgba(${theme.primaryRgb}, 0.3)`);
         root.style.setProperty('--bg-main', theme.bgMain);
+        
+        // Icon colors for auth page too
+        root.style.setProperty('--icon-star-color', theme.primary);
+        root.style.setProperty('--icon-heart-color', theme.primaryDark);
+        root.style.setProperty('--icon-fire-color', theme.primary);
+        root.style.setProperty('--icon-accent-color', theme.primary);
+        
+        // Inject icon styles for auth page
+        const iconStyles = document.createElement('style');
+        iconStyles.textContent = `
+            .logo-icon i,
+            .feature-icon i,
+            .input-icon i,
+            .float-item i {
+                color: var(--icon-accent-color, var(--color-primary)) !important;
+            }
+        `;
+        document.head.appendChild(iconStyles);
     }
 }
