@@ -18,6 +18,8 @@ class User:
 
 ## Normalizam coloanele
 def normalize_text(text):
+    if pd.isna(text):
+        return ""
     text = re.sub(r'<.*?>', '', str(text))
     text = text.encode("ascii", "ignore").decode()
     text = re.sub(r'\s+', ' ', text)
@@ -26,7 +28,8 @@ def normalize_text(text):
 
 def get_n_recommandation(df_products, col1="highlights",col2="ingredients", id = "P433469", N=1):
     print(df_products.head(3), flush=True)
-    df_exp = df_products
+    # df_exp = df_products
+    df_exp = df_products.copy()
     df_exp[col1] = df_exp[col1].apply(normalize_text)
     df_exp[col2] = df_exp[col2].apply(normalize_text)
 
@@ -36,8 +39,7 @@ def get_n_recommandation(df_products, col1="highlights",col2="ingredients", id =
 
     df_exp["final_description"] = df_exp["final_description"].apply(normalize_text)
     df_exp = df_exp.drop_duplicates(subset=["final_description"])
-
-
+    df_exp = df_exp.reset_index(drop=True)
     df_exp = df_exp[df_exp["final_description"].str.strip() != ""]
     df_exp = df_exp.drop_duplicates(subset=["final_description"])
 

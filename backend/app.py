@@ -20,6 +20,7 @@ import secrets
 from datetime import datetime, timedelta
 import pandas as pd
 from recommendations import get_n_recommandation, filter, filter_out, User
+import math
 
 # ============================================================================
 # CONFIGURARE APLICAȚIE FLASK
@@ -867,17 +868,27 @@ def get_recommendations():
             except:
                 pass  # Nu blocăm dacă salvarea eșuează
         
+        # return jsonify({
+        #     "success": True,
+        #     "reference_product": reference_product,
+        #     "recommendations": recommendations,
+        #     "filters_applied": {
+        #         "skin_type": user_skin_type if filter_skin_type else None,
+        #         "allergies": user_allergies if filter_allergies else [],
+        #         "keyword": filter_keyword if filter_keyword else None
+        #     }
+        # })
         return jsonify({
             "success": True,
             "reference_product": reference_product,
-            "recommendations": recommendations,
+            "recommendations": clean_for_json(recommendations),
             "filters_applied": {
                 "skin_type": user_skin_type if filter_skin_type else None,
                 "allergies": user_allergies if filter_allergies else [],
                 "keyword": filter_keyword if filter_keyword else None
             }
         })
-        
+        # return jsonify({"success": True, "recommendations": clean_for_json(recommendations)})
     except Exception as e:
         return jsonify({
             "success": False,
