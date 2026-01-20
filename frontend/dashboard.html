@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +9,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -21,50 +24,50 @@
         <div class="navbar-container">
             <!-- Logo -->
             <a href="dashboard.html" class="navbar-logo">
-                <span class="logo-icon">✨</span>
+                <span class="logo-icon"><i class="fas fa-sparkles"></i></span>
                 <span class="logo-text">GlowUp</span>
             </a>
             
-            <!-- Căutare -->
+            <!-- Search -->
             <div class="navbar-search">
-                <span class="search-icon">🔍</span>
+                <span class="search-icon"><i class="fas fa-search"></i></span>
                 <input 
                     type="search" 
                     id="searchInput" 
-                    placeholder="Caută produse, branduri..."
+                    placeholder="Search products, brands..."
                     autocomplete="off"
                 >
                 <kbd class="search-shortcut">Ctrl+K</kbd>
             </div>
             
-            <!-- Acțiuni user -->
+            <!-- User Actions -->
             <div class="navbar-actions">
-                <button class="btn-icon" id="themeToggle" title="Schimbă tema">
-                    🌙
+                <button class="btn-icon" id="themeToggle" title="Toggle theme">
+                    <i class="fas fa-moon"></i>
                 </button>
                 
                 <div class="user-menu">
                     <button class="user-trigger" id="userMenuBtn">
                         <div class="user-avatar" id="userAvatar">MP</div>
-                        <span class="user-name" id="userName">Utilizator</span>
-                        <span class="dropdown-arrow">▼</span>
+                        <span class="user-name" id="userName">User</span>
+                        <span class="dropdown-arrow"><i class="fas fa-chevron-down"></i></span>
                     </button>
                     
                     <div class="user-dropdown" id="userDropdown">
                         <div class="dropdown-header">
-                            <strong id="dropdownName">Nume Utilizator</strong>
-                            <span id="dropdownEmail">email@example.com</span>
+                            <strong id="dropdownName">User Name</strong>
+                            <span id="dropdownEmail">user@email.com</span>
                         </div>
                         <div class="dropdown-divider"></div>
                         <a href="#" class="dropdown-item" id="openProfile">
-                            <span>👤</span> Profilul Meu
+                            <span><i class="fas fa-user"></i></span> My Profile
                         </a>
                         <a href="#" class="dropdown-item" id="openSettings">
-                            <span>⚙️</span> Setări
+                            <span><i class="fas fa-cog"></i></span> Settings
                         </a>
                         <div class="dropdown-divider"></div>
                         <button class="dropdown-item logout" id="logoutBtn">
-                            <span>🚪</span> Deconectare
+                            <span><i class="fas fa-sign-out-alt"></i></span> Logout
                         </button>
                     </div>
                 </div>
@@ -73,43 +76,43 @@
     </header>
 
     <!-- ============================================
-         CONȚINUT PRINCIPAL
+         MAIN CONTENT
          ============================================ -->
     <main class="dashboard-main">
         <div class="dashboard-container">
             
-            <!-- SIDEBAR - Filtre -->
+            <!-- SIDEBAR - Filters -->
             <aside class="sidebar">
                 <div class="sidebar-section">
                     <h3 class="sidebar-title">
-                        <span>🎯</span> Filtre
+                        <span><i class="fas fa-filter"></i></span> Filters
                     </h3>
                     
-                    <!-- Filtru Categorie -->
+                    <!-- Category Filter -->
                     <div class="filter-group">
-                        <label class="filter-label">Categorie</label>
+                        <label class="filter-label">Category</label>
                         <select id="filterCategory" class="filter-select">
-                            <option value="">Toate categoriile</option>
-                            <!-- Se populează din API -->
+                            <option value="">All Categories</option>
+                            <!-- Populated from API -->
                         </select>
                     </div>
                     
-                    <!-- Filtru Tip Piele -->
+                    <!-- Skin Type Filter -->
                     <div class="filter-group">
-                        <label class="filter-label">Tip Piele</label>
+                        <label class="filter-label">Skin Type</label>
                         <select id="filterSkinType" class="filter-select">
-                            <option value="">Toate tipurile</option>
-                            <option value="Normal">Normală</option>
-                            <option value="Dry">Uscată</option>
-                            <option value="Oily">Grasă</option>
-                            <option value="Combination">Mixtă</option>
-                            <option value="Sensitive">Sensibilă</option>
+                            <option value="">All Types</option>
+                            <option value="Normal">Normal</option>
+                            <option value="Dry">Dry</option>
+                            <option value="Oily">Oily</option>
+                            <option value="Combination">Combination</option>
+                            <option value="Sensitive">Sensitive</option>
                         </select>
                     </div>
                     
-                    <!-- Filtru Preț -->
+                    <!-- Price Filter -->
                     <div class="filter-group">
-                        <label class="filter-label">Preț maxim: <span id="priceValue">$200</span></label>
+                        <label class="filter-label">Max Price: <span id="priceValue">$200</span></label>
                         <input 
                             type="range" 
                             id="filterPrice" 
@@ -120,106 +123,106 @@
                         >
                     </div>
                     
-                    <!-- Checkbox-uri -->
+                    <!-- Checkboxes -->
                     <div class="filter-group">
                         <label class="checkbox-wrapper">
                             <input type="checkbox" id="filterInStock">
                             <span class="checkmark"></span>
-                            <span>Doar în stoc</span>
+                            <span>In Stock Only</span>
                         </label>
                     </div>
                     
                     <button class="btn btn-outline btn-reset-filters" id="resetFilters">
-                        Resetează Filtre
+                        Reset Filters
                     </button>
                 </div>
                 
-                <!-- Info Profil -->
+                <!-- Profile Info -->
                 <div class="sidebar-section profile-summary">
                     <h3 class="sidebar-title">
-                        <span>💆</span> Profilul Tău (Cold Start)
+                        <span><i class="fas fa-user-circle"></i></span> Your Profile (Cold Start)
                     </h3>
                     <div class="profile-info">
                         <div class="profile-row">
-                            <span class="profile-label">Gen:</span>
+                            <span class="profile-label">Gender:</span>
                             <span class="profile-value" id="profileGender">-</span>
                         </div>
                         <div class="profile-row">
-                            <span class="profile-label">Vârstă:</span>
+                            <span class="profile-label">Age:</span>
                             <span class="profile-value" id="profileAgeRange">-</span>
                         </div>
                         <div class="profile-row">
-                            <span class="profile-label">Tip piele:</span>
+                            <span class="profile-label">Skin Type:</span>
                             <span class="profile-value" id="profileSkinType">-</span>
                         </div>
                         <div class="profile-row">
-                            <span class="profile-label">Alergii:</span>
+                            <span class="profile-label">Allergies:</span>
                             <span class="profile-value" id="profileAllergies">-</span>
                         </div>
                     </div>
-                    <p class="profile-hint">Aceste date ne ajută să îți oferim recomandări personalizate</p>
+                    <p class="profile-hint">This data helps us provide personalized recommendations</p>
                     <button class="btn btn-sm btn-outline" id="editProfileBtn">
-                        ✏️ Editează Profil
+                        <i class="fas fa-edit"></i> Edit Profile
                     </button>
                 </div>
             </aside>
 
-            <!-- CONȚINUT CENTRAL -->
+            <!-- MAIN CONTENT AREA -->
             <div class="main-content">
                 
-                <!-- Secțiune Recomandări Personalizate -->
+                <!-- Personalized Recommendations Section -->
                 <section class="section recommendations-section">
                     <div class="section-header">
                         <h2 class="section-title">
-                            <span class="title-icon">✨</span>
-                            Recomandări Pentru Tine
+                            <span class="title-icon"><i class="fas fa-sparkles"></i></span>
+                            Recommendations For You
                         </h2>
-                        <p class="section-subtitle">Produse selectate special pentru tipul tău de piele</p>
+                        <p class="section-subtitle">Products specially selected for your skin type</p>
                     </div>
                     
                     <div class="recommendations-grid" id="personalRecommendations">
-                        <!-- Se populează din API -->
+                        <!-- Populated from API -->
                         <div class="loading-placeholder">
                             <div class="spinner"></div>
-                            <p>Se încarcă recomandările...</p>
+                            <p>Loading recommendations...</p>
                         </div>
                     </div>
                 </section>
 
                 <!-- Separator -->
                 <div class="section-divider">
-                    <span class="divider-text">sau explorează catalogul</span>
+                    <span class="divider-text">or browse the catalog</span>
                 </div>
 
-                <!-- Secțiune Toate Produsele -->
+                <!-- All Products Section -->
                 <section class="section products-section">
                     <div class="section-header">
                         <h2 class="section-title">
-                            <span class="title-icon">🧴</span>
-                            Catalog Produse
+                            <span class="title-icon"><i class="fas fa-flask"></i></span>
+                            Product Catalog
                         </h2>
                         <div class="section-controls">
-                            <span class="results-count" id="resultsCount">0 produse</span>
+                            <span class="results-count" id="resultsCount">0 products</span>
                             <select id="sortProducts" class="sort-select">
-                                <option value="popularity">Popularitate</option>
+                                <option value="popularity">Popularity</option>
                                 <option value="rating">Rating</option>
-                                <option value="price-asc">Preț: Mic → Mare</option>
-                                <option value="price-desc">Preț: Mare → Mic</option>
+                                <option value="price-asc">Price: Low to High</option>
+                                <option value="price-desc">Price: High to Low</option>
                             </select>
                         </div>
                     </div>
                     
                     <div class="products-grid" id="productsGrid">
-                        <!-- Se populează din API -->
+                        <!-- Populated from API -->
                         <div class="loading-placeholder">
                             <div class="spinner"></div>
-                            <p>Se încarcă produsele...</p>
+                            <p>Loading products...</p>
                         </div>
                     </div>
                     
-                    <!-- Paginare -->
+                    <!-- Pagination -->
                     <div class="pagination" id="pagination">
-                        <!-- Se generează dinamic -->
+                        <!-- Dynamically generated -->
                     </div>
                 </section>
             </div>
@@ -227,32 +230,32 @@
     </main>
 
     <!-- ============================================
-         MODAL - DETALII PRODUS + RECOMANDĂRI
+         MODAL - PRODUCT DETAILS + RECOMMENDATIONS
          ============================================ -->
     <div class="modal-overlay" id="productModal">
         <div class="modal-container">
-            <button class="modal-close" id="closeModal">×</button>
+            <button class="modal-close" id="closeModal"><i class="fas fa-times"></i></button>
             
             <div class="modal-content">
-                <!-- Partea stânga - Detalii produs -->
+                <!-- Left side - Product Details -->
                 <div class="product-details">
-                    <div class="product-badge" id="modalBadge">Popular</div>
+                    <div class="product-badge" id="modalBadge"><i class="fas fa-fire"></i> Popular</div>
                     
                     <div class="product-header">
                         <span class="product-brand" id="modalBrand">Brand</span>
-                        <h2 class="product-name" id="modalName">Nume Produs</h2>
+                        <h2 class="product-name" id="modalName">Product Name</h2>
                     </div>
                     
                     <div class="product-meta">
                         <div class="meta-item">
-                            <span class="meta-icon">⭐</span>
+                            <span class="meta-icon"><i class="fas fa-star"></i></span>
                             <span id="modalRating">4.5</span>
-                            <span class="meta-label">(<span id="modalReviews">0</span> recenzii)</span>
+                            <span class="meta-label">(<span id="modalReviews">0</span> reviews)</span>
                         </div>
                         <div class="meta-item">
-                            <span class="meta-icon">❤️</span>
+                            <span class="meta-icon"><i class="fas fa-heart"></i></span>
                             <span id="modalLoves">0</span>
-                            <span class="meta-label">aprecieri</span>
+                            <span class="meta-label">loves</span>
                         </div>
                     </div>
                     
@@ -262,56 +265,56 @@
                     
                     <div class="product-info-grid">
                         <div class="info-card">
-                            <span class="info-icon">🏷️</span>
-                            <span class="info-label">Categorie</span>
+                            <span class="info-icon"><i class="fas fa-tag"></i></span>
+                            <span class="info-label">Category</span>
                             <span class="info-value" id="modalCategory">-</span>
                         </div>
                         <div class="info-card">
-                            <span class="info-icon">💆</span>
-                            <span class="info-label">Tip Piele</span>
+                            <span class="info-icon"><i class="fas fa-spa"></i></span>
+                            <span class="info-label">Skin Type</span>
                             <span class="info-value" id="modalSkinType">-</span>
                         </div>
                     </div>
                     
                     <div class="product-highlights">
-                        <h4>Caracteristici</h4>
+                        <h4>Features</h4>
                         <div class="highlights-tags" id="modalHighlights">
-                            <!-- Se populează dinamic -->
+                            <!-- Dynamically populated -->
                         </div>
                     </div>
                     
-                    <!-- Buton pentru recomandări -->
+                    <!-- Button for recommendations -->
                     <button class="btn btn-primary btn-get-recommendations" id="getRecommendationsBtn">
-                        <span class="btn-icon">✨</span>
-                        <span class="btn-text">Găsește Produse Similare</span>
+                        <span class="btn-icon"><i class="fas fa-magic"></i></span>
+                        <span class="btn-text">Find Similar Products</span>
                         <span class="btn-loader" hidden></span>
                     </button>
                     
-                    <!-- Opțiuni recomandări -->
+                    <!-- Recommendation options -->
                     <div class="recommendation-options">
                         <label class="checkbox-wrapper">
                             <input type="checkbox" id="filterBySkinType" checked>
                             <span class="checkmark"></span>
-                            <span>Filtrează după tipul meu de piele</span>
+                            <span>Filter by my skin type</span>
                         </label>
                         <label class="checkbox-wrapper">
                             <input type="checkbox" id="filterByAllergies" checked>
                             <span class="checkmark"></span>
-                            <span>Exclude ingrediente alergene</span>
+                            <span>Exclude allergen ingredients</span>
                         </label>
                     </div>
                 </div>
                 
-                <!-- Partea dreapta - Recomandări -->
+                <!-- Right side - Recommendations -->
                 <div class="recommendations-panel">
                     <h3 class="panel-title">
-                        <span>🎯</span> Produse Recomandate
+                        <span><i class="fas fa-bullseye"></i></span> Recommended Products
                     </h3>
                     
                     <div class="recommendations-list" id="modalRecommendations">
                         <div class="empty-state">
-                            <span class="empty-icon">💡</span>
-                            <p>Apasă butonul pentru a genera recomandări personalizate bazate pe acest produs</p>
+                            <span class="empty-icon"><i class="fas fa-lightbulb"></i></span>
+                            <p>Click the button to generate personalized recommendations based on this product</p>
                         </div>
                     </div>
                 </div>
@@ -320,45 +323,45 @@
     </div>
 
     <!-- ============================================
-         MODAL - EDITARE PROFIL
+         MODAL - EDIT PROFILE
          ============================================ -->
     <div class="modal-overlay" id="profileModal">
         <div class="modal-container modal-small">
-            <button class="modal-close" id="closeProfileModal">×</button>
+            <button class="modal-close" id="closeProfileModal"><i class="fas fa-times"></i></button>
             
             <div class="modal-content">
-                <h2 class="modal-title">Editează Profilul</h2>
-                <p class="modal-subtitle">Actualizează datele pentru recomandări mai precise</p>
+                <h2 class="modal-title">Edit Profile</h2>
+                <p class="modal-subtitle">Update your data for more accurate recommendations</p>
                 
                 <form id="profileForm" class="profile-form">
                     <div class="input-group">
-                        <label for="editName">Nume</label>
+                        <label for="editName">Name</label>
                         <input type="text" id="editName" name="name" required>
                     </div>
                     
-                    <!-- Gen - Radio Buttons -->
+                    <!-- Gender - Radio Buttons -->
                     <div class="input-group">
-                        <label>Gen</label>
+                        <label>Gender</label>
                         <div class="gender-options-mini">
                             <label class="radio-btn">
                                 <input type="radio" name="edit_gender" value="female">
-                                <span>👩 Feminin</span>
+                                <span><i class="fas fa-venus"></i> Female</span>
                             </label>
                             <label class="radio-btn">
                                 <input type="radio" name="edit_gender" value="male">
-                                <span>👨 Masculin</span>
+                                <span><i class="fas fa-mars"></i> Male</span>
                             </label>
                             <label class="radio-btn">
                                 <input type="radio" name="edit_gender" value="other">
-                                <span>🧑 Altul</span>
+                                <span><i class="fas fa-genderless"></i> Other</span>
                             </label>
                         </div>
                     </div>
                     
-                    <!-- Interval Vârstă - Conform PDF Cold Start -->
+                    <!-- Age Range -->
                     <div class="input-group">
-                        <label>Interval de Vârstă</label>
-                        <p class="input-hint-small">Pentru a estima nevoile pielii (hidratare, anti-aging)</p>
+                        <label>Age Range</label>
+                        <p class="input-hint-small">To estimate skin needs (hydration, anti-aging)</p>
                         <div class="age-options-mini">
                             <label class="radio-btn">
                                 <input type="radio" name="edit_age_range" value="13-17">
@@ -387,50 +390,50 @@
                         </div>
                     </div>
                     
-                    <!-- Tip Piele - 4 opțiuni (din dataset) -->
+                    <!-- Skin Type -->
                     <div class="input-group">
-                        <label>Tip Piele</label>
+                        <label>Skin Type</label>
                         <div class="skin-type-mini">
                             <label class="radio-btn">
                                 <input type="radio" name="edit_skin_type" value="normal">
-                                <span>😊 Normală</span>
+                                <span><i class="fas fa-smile"></i> Normal</span>
                             </label>
                             <label class="radio-btn">
                                 <input type="radio" name="edit_skin_type" value="dry">
-                                <span>🏜️ Uscată</span>
+                                <span><i class="fas fa-sun"></i> Dry</span>
                             </label>
                             <label class="radio-btn">
                                 <input type="radio" name="edit_skin_type" value="oily">
-                                <span>✨ Grasă</span>
+                                <span><i class="fas fa-tint"></i> Oily</span>
                             </label>
                             <label class="radio-btn">
                                 <input type="radio" name="edit_skin_type" value="combination">
-                                <span>🎭 Mixtă</span>
+                                <span><i class="fas fa-adjust"></i> Combination</span>
                             </label>
                         </div>
                     </div>
                     
-                    <!-- Alergii - Checkboxuri comune + input text -->
+                    <!-- Allergies -->
                     <div class="input-group">
-                        <label>Alergii</label>
-                        <p class="input-hint-small">⚠️ Excludem produsele cu acești alergeni</p>
+                        <label>Allergies</label>
+                        <p class="input-hint-small"><i class="fas fa-exclamation-triangle"></i> We'll exclude products with these allergens</p>
                         
                         <div class="allergens-mini">
                             <label class="checkbox-mini">
                                 <input type="checkbox" name="edit_common_allergies" value="alcohol">
-                                <span>Alcool</span>
+                                <span>Alcohol</span>
                             </label>
                             <label class="checkbox-mini">
                                 <input type="checkbox" name="edit_common_allergies" value="fragrance">
-                                <span>Parfum</span>
+                                <span>Fragrance</span>
                             </label>
                             <label class="checkbox-mini">
                                 <input type="checkbox" name="edit_common_allergies" value="phenoxyethanol">
-                                <span>Fenoxietanol</span>
+                                <span>Phenoxyethanol</span>
                             </label>
                             <label class="checkbox-mini">
                                 <input type="checkbox" name="edit_common_allergies" value="dimethicone">
-                                <span>Siliconi</span>
+                                <span>Silicones</span>
                             </label>
                             <label class="checkbox-mini">
                                 <input type="checkbox" name="edit_common_allergies" value="limonene">
@@ -442,11 +445,11 @@
                             </label>
                             <label class="checkbox-mini">
                                 <input type="checkbox" name="edit_common_allergies" value="propylene glycol">
-                                <span>Propilen Glicol</span>
+                                <span>Propylene Glycol</span>
                             </label>
                             <label class="checkbox-mini">
                                 <input type="checkbox" name="edit_common_allergies" value="salicylic acid">
-                                <span>Acid Salicilic</span>
+                                <span>Salicylic Acid</span>
                             </label>
                             <label class="checkbox-mini">
                                 <input type="checkbox" name="edit_common_allergies" value="retinol">
@@ -454,19 +457,19 @@
                             </label>
                             <label class="checkbox-mini">
                                 <input type="checkbox" name="edit_common_allergies" value="paraben">
-                                <span>Parabeni</span>
+                                <span>Parabens</span>
                             </label>
                         </div>
                         
-                        <input type="text" id="editAllergies" name="allergies" placeholder="Alte alergii (separate prin virgulă)" style="margin-top: 0.5rem;">
+                        <input type="text" id="editAllergies" name="allergies" placeholder="Other allergies (comma separated)" style="margin-top: 0.5rem;">
                     </div>
                     
                     <div class="form-actions">
                         <button type="button" class="btn btn-secondary" id="cancelProfileEdit">
-                            Anulează
+                            Cancel
                         </button>
                         <button type="submit" class="btn btn-primary">
-                            Salvează Modificările
+                            Save Changes
                         </button>
                     </div>
                     
@@ -480,7 +483,7 @@
          TOAST NOTIFICATIONS
          ============================================ -->
     <div class="toast-container" id="toastContainer">
-        <!-- Toast-urile se adaugă dinamic -->
+        <!-- Toasts are added dynamically via JS -->
     </div>
 
     <script src="js/app.js"></script>

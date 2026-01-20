@@ -1,0 +1,232 @@
+/* ============================================================================
+   GLOWUP - CSS VARIABLES (ADD THIS AT THE TOP OF styles.css)
+   ============================================================================
+   
+   HOW TO CUSTOMIZE THE ACCENT COLOR:
+   ----------------------------------
+   Simply change the --color-primary values below to your desired color.
+   The rest of the colors will adjust automatically.
+   
+   PRESET COLOR THEMES:
+   --------------------
+   Beige/Tan (current):  #d4a373
+   Rose Gold:            #B76E79
+   Sage Green:           #9CAF88
+   Dusty Blue:           #6B8E9B
+   Lavender:             #9B8AA5
+   Coral:                #E07A5F
+   Mauve:                #C9A9A6
+   Teal:                 #5F9EA0
+   
+   ============================================================================ */
+
+:root {
+    /* ========================================
+       PRIMARY ACCENT COLOR - CUSTOMIZE HERE!
+       ======================================== */
+    --color-primary: #d4a373;           /* Main accent - buttons, links, highlights */
+    --color-primary-light: #e8c9a8;     /* Hover states, light backgrounds */
+    --color-primary-dark: #b8956a;      /* Active states, darker accents */
+    --color-primary-rgb: 212, 163, 115; /* For rgba() usage */
+    
+    /* ========================================
+       SECONDARY COLORS (adjust if needed)
+       ======================================== */
+    --color-secondary: #faedcd;         /* Secondary backgrounds */
+    --color-accent: #ccd5ae;            /* Accent elements */
+    --color-accent-dark: #9aa385;       /* Darker accent */
+    
+    /* ========================================
+       BACKGROUNDS
+       ======================================== */
+    --bg-main: #fefae0;                 /* Page background */
+    --bg-card: #ffffff;                 /* Card backgrounds */
+    --bg-sidebar: #faf7f0;              /* Sidebar background */
+    --bg-input: #ffffff;                /* Input backgrounds */
+    --bg-hover: rgba(212, 163, 115, 0.1); /* Hover state backgrounds */
+    
+    /* ========================================
+       TEXT COLORS
+       ======================================== */
+    --text-primary: #2c2c2c;            /* Main text */
+    --text-secondary: #6b6b6b;          /* Secondary text */
+    --text-muted: #9a9a9a;              /* Muted/placeholder text */
+    --text-inverse: #ffffff;            /* Text on dark backgrounds */
+    
+    /* ========================================
+       BORDERS & SHADOWS
+       ======================================== */
+    --border-color: #e8e2d9;
+    --border-light: #f0ebe3;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+    --shadow-glow: 0 0 30px rgba(212, 163, 115, 0.3);
+    
+    /* ========================================
+       STATUS COLORS
+       ======================================== */
+    --color-success: #86a873;
+    --color-error: #d17a7a;
+    --color-warning: #d4a373;
+    --color-info: #7a9ed1;
+    
+    /* ========================================
+       SPACING
+       ======================================== */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 3rem;
+    
+    /* ========================================
+       BORDER RADIUS
+       ======================================== */
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-full: 9999px;
+    
+    /* ========================================
+       TRANSITIONS
+       ======================================== */
+    --transition-fast: 150ms ease;
+    --transition-base: 250ms ease;
+    --transition-slow: 400ms ease;
+    
+    /* ========================================
+       TYPOGRAPHY
+       ======================================== */
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'Montserrat', -apple-system, sans-serif;
+    
+    /* ========================================
+       Z-INDEX LAYERS
+       ======================================== */
+    --z-dropdown: 100;
+    --z-modal: 200;
+    --z-toast: 300;
+}
+
+/* ========================================
+   DARK MODE OVERRIDES
+   ======================================== */
+[data-theme="dark"] {
+    --bg-main: #1a1a1a;
+    --bg-card: #252525;
+    --bg-sidebar: #1f1f1f;
+    --bg-input: #2a2a2a;
+    --bg-hover: rgba(212, 163, 115, 0.15);
+    
+    --text-primary: #f0f0f0;
+    --text-secondary: #b0b0b0;
+    --text-muted: #808080;
+    
+    --border-color: #3a3a3a;
+    --border-light: #2f2f2f;
+    
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* ========================================
+   FONT AWESOME ICON STYLING
+   ======================================== */
+.fas, .far, .fab {
+    font-size: inherit;
+    line-height: inherit;
+}
+
+/* Star icon color */
+.stat-icon .fa-star,
+.meta-icon .fa-star,
+.rec-stats .fa-star {
+    color: #F59E0B;
+}
+
+/* Heart icon color */
+.stat-icon .fa-heart,
+.meta-icon .fa-heart,
+.rec-stats .fa-heart {
+    color: #EF4444;
+}
+
+/* Fire icon (popular badge) */
+.card-badge .fa-fire,
+.product-badge .fa-fire {
+    color: #F97316;
+}
+
+/* Icon sizing helpers */
+.icon-sm { font-size: 0.875rem; }
+.icon-md { font-size: 1rem; }
+.icon-lg { font-size: 1.25rem; }
+.icon-xl { font-size: 1.5rem; }
+
+/* Icon spacing */
+.btn i,
+.dropdown-item i,
+.feature-icon i,
+.input-icon i {
+    margin-right: 0.5rem;
+}
+
+/* Logo icon */
+.logo-icon i {
+    color: var(--color-primary);
+}
+
+/* ========================================
+   PRESET THEMES (uncomment to use)
+   ======================================== */
+
+/* ROSE GOLD THEME
+:root {
+    --color-primary: #B76E79;
+    --color-primary-light: #D4A5AD;
+    --color-primary-dark: #8B4D55;
+    --color-primary-rgb: 183, 110, 121;
+    --bg-main: #FDF5F6;
+    --color-secondary: #F5E6E8;
+    --shadow-glow: 0 0 30px rgba(183, 110, 121, 0.3);
+}
+*/
+
+/* SAGE GREEN THEME
+:root {
+    --color-primary: #9CAF88;
+    --color-primary-light: #B8C9A6;
+    --color-primary-dark: #7A8D6A;
+    --color-primary-rgb: 156, 175, 136;
+    --bg-main: #F5F7F2;
+    --color-secondary: #E8EDE3;
+    --shadow-glow: 0 0 30px rgba(156, 175, 136, 0.3);
+}
+*/
+
+/* DUSTY BLUE THEME
+:root {
+    --color-primary: #6B8E9B;
+    --color-primary-light: #9BB5BF;
+    --color-primary-dark: #4D6B77;
+    --color-primary-rgb: 107, 142, 155;
+    --bg-main: #F3F6F7;
+    --color-secondary: #E3EBED;
+    --shadow-glow: 0 0 30px rgba(107, 142, 155, 0.3);
+}
+*/
+
+/* LAVENDER THEME
+:root {
+    --color-primary: #9B8AA5;
+    --color-primary-light: #BFB2C7;
+    --color-primary-dark: #7A6B85;
+    --color-primary-rgb: 155, 138, 165;
+    --bg-main: #F7F5F8;
+    --color-secondary: #EBE6EE;
+    --shadow-glow: 0 0 30px rgba(155, 138, 165, 0.3);
+}
+*/

@@ -2,41 +2,33 @@
  * ============================================================================
  * GLOWUP - DASHBOARD JAVASCRIPT
  * ============================================================================
- * Acest fișier gestionează:
- * - Afișarea produselor
- * - Generarea și afișarea recomandărilor
- * - Filtrare și căutare
- * - Modal-uri pentru detalii produs
- * - Editare profil utilizator
+ * This file handles:
+ * - Product display
+ * - Recommendation generation and display
+ * - Filtering and search
+ * - Product detail modals
+ * - User profile editing
  * ============================================================================
  */
 
 // =============================================================================
-// VARIABILE GLOBALE
+// GLOBAL VARIABLES
 // =============================================================================
 
-// Utilizatorul curent
 let currentUser = null;
-
-// Produsul selectat pentru modal
 let selectedProduct = null;
-
-// Parametri paginare
 let currentPage = 1;
 const productsPerPage = 12;
-
-// Cache pentru produse
 let productsCache = [];
 
 // =============================================================================
-// INIȚIALIZARE DASHBOARD
+// DASHBOARD INITIALIZATION
 // =============================================================================
 
 /**
- * Inițializează dashboard-ul
+ * Initializes the dashboard
  */
 async function initDashboard() {
-    // Verifică autentificarea
     currentUser = GlowUp.getUser();
     
     if (!currentUser) {
@@ -44,27 +36,17 @@ async function initDashboard() {
         return;
     }
     
-    // Actualizează UI-ul cu datele utilizatorului
     updateUserUI();
-    
-    // Încarcă categoriile pentru filtre
     await loadCategories();
-    
-    // Încarcă recomandările personalizate
     await loadPersonalRecommendations();
-    
-    // Încarcă produsele
     await loadProducts();
-    
-    // Inițializează event listeners
     initEventListeners();
 }
 
 /**
- * Actualizează interfața cu datele utilizatorului
+ * Updates the UI with user data
  */
 function updateUserUI() {
-    // Navbar
     const userAvatar = document.getElementById('userAvatar');
     const userName = document.getElementById('userName');
     const dropdownName = document.getElementById('dropdownName');
@@ -75,7 +57,6 @@ function updateUserUI() {
     if (dropdownName) dropdownName.textContent = currentUser.name;
     if (dropdownEmail) dropdownEmail.textContent = currentUser.email;
     
-    // Sidebar - Profil Cold Start
     const profileSkinType = document.getElementById('profileSkinType');
     const profileAllergies = document.getElementById('profileAllergies');
     const profileAgeRange = document.getElementById('profileAgeRange');
@@ -83,17 +64,16 @@ function updateUserUI() {
     
     if (profileSkinType) {
         const skinTypeLabels = {
-            'Normal': 'Normală',
-            'Dry': 'Uscată',
-            'Oily': 'Grasă',
-            'Combination': 'Mixtă',
-            'Sensitive': 'Sensibilă',
-            // Lowercase pentru compatibilitate
-            'normal': 'Normală',
-            'dry': 'Uscată',
-            'oily': 'Grasă',
-            'combination': 'Mixtă',
-            'sensitive': 'Sensibilă'
+            'Normal': 'Normal',
+            'Dry': 'Dry',
+            'Oily': 'Oily',
+            'Combination': 'Combination',
+            'Sensitive': 'Sensitive',
+            'normal': 'Normal',
+            'dry': 'Dry',
+            'oily': 'Oily',
+            'combination': 'Combination',
+            'sensitive': 'Sensitive'
         };
         profileSkinType.textContent = skinTypeLabels[currentUser.skin_type] || '-';
     }
@@ -101,14 +81,13 @@ function updateUserUI() {
     if (profileAllergies) {
         const allergies = currentUser.allergies || [];
         if (allergies.length > 0) {
-            // Afișăm primele 3 și "..." dacă sunt mai multe
             const displayAllergies = allergies.slice(0, 3);
             const text = displayAllergies.join(', ');
             profileAllergies.textContent = allergies.length > 3 
                 ? `${text}... (+${allergies.length - 3})` 
                 : text;
         } else {
-            profileAllergies.textContent = 'Niciuna';
+            profileAllergies.textContent = 'None';
         }
     }
     
@@ -118,20 +97,20 @@ function updateUserUI() {
     
     if (profileGender) {
         const genderLabels = {
-            'female': 'Feminin',
-            'male': 'Masculin',
-            'other': 'Altul'
+            'female': 'Female',
+            'male': 'Male',
+            'other': 'Other'
         };
         profileGender.textContent = genderLabels[currentUser.gender] || '-';
     }
 }
 
 // =============================================================================
-// ÎNCĂRCARE DATE
+// DATA LOADING
 // =============================================================================
 
 /**
- * Încarcă categoriile pentru dropdown
+ * Loads categories for dropdown
  */
 async function loadCategories() {
     try {
@@ -148,12 +127,12 @@ async function loadCategories() {
             });
         }
     } catch (error) {
-        console.error('Eroare la încărcarea categoriilor:', error);
+        console.error('Error loading categories:', error);
     }
 }
 
 /**
- * Încarcă recomandările personalizate pentru utilizator
+ * Loads personalized recommendations for the user
  */
 async function loadPersonalRecommendations() {
     const container = document.getElementById('personalRecommendations');
@@ -161,8 +140,8 @@ async function loadPersonalRecommendations() {
     if (!currentUser?.id) {
         container.innerHTML = `
             <div class="empty-state">
-                <span class="empty-icon">ℹ️</span>
-                <p>Completează-ți profilul pentru recomandări personalizate</p>
+                <span class="empty-icon"><i class="fas fa-info-circle"></i></span>
+                <p>Complete your profile for personalized recommendations</p>
             </div>
         `;
         return;
@@ -173,50 +152,46 @@ async function loadPersonalRecommendations() {
         
         if (response.success && response.recommendations.length > 0) {
             container.innerHTML = response.recommendations
-                .slice(0, 4) // Afișăm primele 4
+                .slice(0, 4)
                 .map(product => createProductCard(product, true))
                 .join('');
             
-            // Adaugă event listeners pentru carduri
             addCardEventListeners(container);
         } else {
             container.innerHTML = `
                 <div class="empty-state">
-                    <span class="empty-icon">🔍</span>
-                    <p>Nu am găsit recomandări. Încearcă să-ți completezi profilul!</p>
+                    <span class="empty-icon"><i class="fas fa-search"></i></span>
+                    <p>No recommendations found. Try completing your profile!</p>
                 </div>
             `;
         }
     } catch (error) {
-        console.error('Eroare la încărcarea recomandărilor:', error);
+        console.error('Error loading recommendations:', error);
         container.innerHTML = `
             <div class="empty-state">
-                <span class="empty-icon">⚠️</span>
-                <p>Nu s-au putut încărca recomandările. Verifică conexiunea la server.</p>
+                <span class="empty-icon"><i class="fas fa-exclamation-triangle"></i></span>
+                <p>Could not load recommendations. Check server connection.</p>
             </div>
         `;
     }
 }
 
 /**
- * Încarcă lista de produse
- * 
- * @param {object} filters - Filtrele aplicate
+ * Loads the product list
+ * @param {object} filters - Applied filters
  */
 async function loadProducts(filters = {}) {
     const container = document.getElementById('productsGrid');
     const resultsCount = document.getElementById('resultsCount');
     
-    // Afișează loading
     container.innerHTML = `
         <div class="loading-placeholder">
             <div class="spinner"></div>
-            <p>Se încarcă produsele...</p>
+            <p>Loading products...</p>
         </div>
     `;
     
     try {
-        // Construiește query params
         const params = new URLSearchParams({
             limit: productsPerPage,
             offset: (currentPage - 1) * productsPerPage,
@@ -228,9 +203,8 @@ async function loadProducts(filters = {}) {
         if (response.success) {
             productsCache = response.products;
             
-            // Actualizează numărul de rezultate
             if (resultsCount) {
-                resultsCount.textContent = `${response.total} produse`;
+                resultsCount.textContent = `${response.total} products`;
             }
             
             if (response.products.length > 0) {
@@ -238,62 +212,58 @@ async function loadProducts(filters = {}) {
                     .map(product => createProductCard(product))
                     .join('');
                 
-                // Adaugă event listeners
                 addCardEventListeners(container);
-                
-                // Generează paginare
                 generatePagination(response.total);
             } else {
                 container.innerHTML = `
                     <div class="empty-state">
-                        <span class="empty-icon">🔍</span>
-                        <p>Nu am găsit produse cu aceste filtre</p>
+                        <span class="empty-icon"><i class="fas fa-search"></i></span>
+                        <p>No products found with these filters</p>
                     </div>
                 `;
             }
         }
     } catch (error) {
-        console.error('Eroare la încărcarea produselor:', error);
+        console.error('Error loading products:', error);
         container.innerHTML = `
             <div class="empty-state">
-                <span class="empty-icon">⚠️</span>
-                <p>Nu s-au putut încărca produsele. Verifică conexiunea la server.</p>
+                <span class="empty-icon"><i class="fas fa-exclamation-triangle"></i></span>
+                <p>Could not load products. Check server connection.</p>
             </div>
         `;
     }
 }
 
 /**
- * Creează HTML-ul pentru un card de produs
- * 
- * @param {object} product - Datele produsului
- * @param {boolean} isRecommendation - Dacă e în secțiunea de recomandări
- * @returns {string} - HTML-ul cardului
+ * Creates HTML for a product card
+ * @param {object} product - Product data
+ * @param {boolean} isRecommendation - If it's in the recommendations section
+ * @returns {string} - Card HTML
  */
 function createProductCard(product, isRecommendation = false) {
     const rating = product.rating ? product.rating.toFixed(1) : 'N/A';
     const loves = formatNumber(product.loves_count || 0);
     const price = product.price ? `$${product.price.toFixed(2)}` : 'N/A';
     
-    // Badge-uri speciale
+    // Special badges
     let badge = '';
     if (product.loves_count > 50000) {
-        badge = '<span class="card-badge">🔥 Popular</span>';
+        badge = '<span class="card-badge"><i class="fas fa-fire"></i> Popular</span>';
     } else if (isRecommendation) {
-        badge = '<span class="card-badge">✨ Recomandat</span>';
+        badge = '<span class="card-badge"><i class="fas fa-star"></i> Recommended</span>';
     }
     
-    // Tip piele
+    // Skin type labels
     const skinTypeLabels = {
-        normal: 'Normală',
-        dry: 'Uscată',
-        oily: 'Grasă',
-        combination: 'Mixtă',
-        all: 'Toate'
+        normal: 'Normal',
+        dry: 'Dry',
+        oily: 'Oily',
+        combination: 'Combination',
+        all: 'All'
     };
     const skinType = skinTypeLabels[product.skin_type?.toLowerCase()] || '';
     
-    // Parsare highlights pentru hover
+    // Parse highlights for hover (NO INGREDIENTS)
     let highlightsHtml = '';
     if (product.highlights) {
         try {
@@ -310,29 +280,12 @@ function createProductCard(product, isRecommendation = false) {
         }
     }
     
-    // Parsare ingrediente pentru hover (primele 5)
-    let ingredientsHtml = '';
-    if (product.ingredients) {
-        try {
-            let ingredients = product.ingredients;
-            if (typeof ingredients === 'string') {
-                ingredients = ingredients.replace(/[\[\]']/g, '').split(',').map(i => i.trim()).filter(i => i);
-            }
-            if (ingredients.length > 0) {
-                const topIngredients = ingredients.slice(0, 5).map(i => i.split(' ').slice(0, 2).join(' '));
-                ingredientsHtml = `<p class="hover-ingredients"><strong>Ingrediente cheie:</strong> ${topIngredients.join(', ')}...</p>`;
-            }
-        } catch (e) {
-            console.log('Error parsing ingredients:', e);
-        }
-    }
-    
-    // Categorie secundară
+    // Secondary category
     const secondaryCategory = product.secondary_category ? escapeHtml(product.secondary_category) : '';
     
     return `
         <article class="product-card" data-product-id="${product.product_id}">
-            <!-- Conținut principal vizibil -->
+            <!-- Main visible content -->
             <div class="card-main">
                 <div class="card-header">
                     <span class="card-brand">${escapeHtml(product.brand_name)}</span>
@@ -343,11 +296,11 @@ function createProductCard(product, isRecommendation = false) {
                 
                 <div class="card-stats">
                     <div class="stat">
-                        <span class="stat-icon">⭐</span>
+                        <span class="stat-icon"><i class="fas fa-star"></i></span>
                         <span class="stat-value">${rating}</span>
                     </div>
                     <div class="stat">
-                        <span class="stat-icon">❤️</span>
+                        <span class="stat-icon"><i class="fas fa-heart"></i></span>
                         <span class="stat-value">${loves}</span>
                     </div>
                 </div>
@@ -358,20 +311,18 @@ function createProductCard(product, isRecommendation = false) {
                 </div>
             </div>
             
-            <!-- Overlay cu detalii (apare la hover) -->
+            <!-- Hover overlay with details -->
             <div class="card-hover-overlay">
                 <div class="hover-content">
                     <p class="hover-category">
-                        <span class="hover-label">📁</span> 
+                        <span class="hover-label"><i class="fas fa-folder"></i></span> 
                         ${secondaryCategory || product.primary_category || 'Skincare'}
                     </p>
                     
                     ${highlightsHtml ? `<div class="hover-highlights">${highlightsHtml}</div>` : ''}
                     
-                    ${ingredientsHtml}
-                    
                     <button class="btn-view-details">
-                        <span>👁️ Vezi Detalii</span>
+                        <span><i class="fas fa-eye"></i> View Details</span>
                     </button>
                 </div>
             </div>
@@ -380,9 +331,8 @@ function createProductCard(product, isRecommendation = false) {
 }
 
 /**
- * Adaugă event listeners pentru cardurile de produse
- * 
- * @param {HTMLElement} container - Containerul cu carduri
+ * Adds event listeners for product cards
+ * @param {HTMLElement} container - Container with cards
  */
 function addCardEventListeners(container) {
     const cards = container.querySelectorAll('.product-card');
@@ -395,10 +345,13 @@ function addCardEventListeners(container) {
     });
 }
 
+// =============================================================================
+// PAGINATION
+// =============================================================================
+
 /**
- * Generează butoanele de paginare
- * 
- * @param {number} total - Numărul total de produse
+ * Generates pagination buttons
+ * @param {number} total - Total number of products
  */
 function generatePagination(total) {
     const container = document.getElementById('pagination');
@@ -411,12 +364,12 @@ function generatePagination(total) {
     
     let html = '';
     
-    // Buton Previous
+    // Previous button
     if (currentPage > 1) {
-        html += `<button class="page-btn" data-page="${currentPage - 1}">←</button>`;
+        html += `<button class="page-btn" data-page="${currentPage - 1}"><i class="fas fa-chevron-left"></i></button>`;
     }
     
-    // Pagini
+    // Pages
     const startPage = Math.max(1, currentPage - 2);
     const endPage = Math.min(totalPages, currentPage + 2);
     
@@ -438,14 +391,14 @@ function generatePagination(total) {
         html += `<button class="page-btn" data-page="${totalPages}">${totalPages}</button>`;
     }
     
-    // Buton Next
+    // Next button
     if (currentPage < totalPages) {
-        html += `<button class="page-btn" data-page="${currentPage + 1}">→</button>`;
+        html += `<button class="page-btn" data-page="${currentPage + 1}"><i class="fas fa-chevron-right"></i></button>`;
     }
     
     container.innerHTML = html;
     
-    // Event listeners pentru butoane
+    // Event listeners for buttons
     container.querySelectorAll('.page-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             currentPage = parseInt(btn.dataset.page);
@@ -458,13 +411,12 @@ function generatePagination(total) {
 }
 
 // =============================================================================
-// MODAL PRODUS
+// PRODUCT MODAL
 // =============================================================================
 
 /**
- * Deschide modalul cu detaliile unui produs
- * 
- * @param {string} productId - ID-ul produsului
+ * Opens modal with product details
+ * @param {string} productId - Product ID
  */
 async function openProductModal(productId) {
     const modal = document.getElementById('productModal');
@@ -475,7 +427,7 @@ async function openProductModal(productId) {
         if (response.success) {
             selectedProduct = response.product;
             
-            // Populează modalul cu datele produsului
+            // Populate modal with product data
             document.getElementById('modalBrand').textContent = selectedProduct.brand_name;
             document.getElementById('modalName').textContent = selectedProduct.product_name;
             document.getElementById('modalRating').textContent = selectedProduct.rating?.toFixed(1) || 'N/A';
@@ -495,37 +447,37 @@ async function openProductModal(productId) {
                     .map(h => `<span class="highlight-tag">${escapeHtml(h)}</span>`)
                     .join('');
             } else {
-                highlightsContainer.innerHTML = '<span class="highlight-tag">Niciuna specificată</span>';
+                highlightsContainer.innerHTML = '<span class="highlight-tag">None specified</span>';
             }
             
             // Badge
             const badge = document.getElementById('modalBadge');
             if (selectedProduct.loves_count > 50000) {
-                badge.textContent = '🔥 Popular';
+                badge.innerHTML = '<i class="fas fa-fire"></i> Popular';
                 badge.style.display = 'inline-block';
             } else {
                 badge.style.display = 'none';
             }
             
-            // Resetează recomandările
+            // Reset recommendations
             document.getElementById('modalRecommendations').innerHTML = `
                 <div class="empty-state">
-                    <span class="empty-icon">💡</span>
-                    <p>Apasă butonul pentru a genera recomandări personalizate bazate pe acest produs</p>
+                    <span class="empty-icon"><i class="fas fa-lightbulb"></i></span>
+                    <p>Click the button to generate personalized recommendations based on this product</p>
                 </div>
             `;
             
-            // Afișează modalul
+            // Show modal
             modal.classList.add('active');
         }
     } catch (error) {
-        console.error('Eroare la încărcarea produsului:', error);
-        showToast('Nu s-au putut încărca detaliile produsului', 'error');
+        console.error('Error loading product:', error);
+        showToast('Could not load product details', 'error');
     }
 }
 
 /**
- * Închide modalul produsului
+ * Closes the product modal
  */
 function closeProductModal() {
     const modal = document.getElementById('productModal');
@@ -534,7 +486,7 @@ function closeProductModal() {
 }
 
 /**
- * Generează și afișează recomandări pentru produsul selectat
+ * Generates and displays recommendations for selected product
  */
 async function generateRecommendations() {
     if (!selectedProduct) return;
@@ -549,7 +501,7 @@ async function generateRecommendations() {
     container.innerHTML = `
         <div class="loading-placeholder">
             <div class="spinner"></div>
-            <p>Se generează recomandări...</p>
+            <p>Generating recommendations...</p>
         </div>
     `;
     
@@ -570,22 +522,22 @@ async function generateRecommendations() {
                 .map(product => createRecommendationItem(product))
                 .join('');
             
-            // Adaugă event listeners pentru click pe fiecare recomandare
+            // Add click listeners for each recommendation
             addRecommendationClickListeners(container);
         } else {
             container.innerHTML = `
                 <div class="empty-state">
-                    <span class="empty-icon">😕</span>
-                    <p>Nu am găsit recomandări cu aceste filtre. Încearcă să dezactivezi unele filtre.</p>
+                    <span class="empty-icon"><i class="fas fa-frown"></i></span>
+                    <p>No recommendations found with these filters. Try disabling some filters.</p>
                 </div>
             `;
         }
     } catch (error) {
-        console.error('Eroare la generarea recomandărilor:', error);
+        console.error('Error generating recommendations:', error);
         container.innerHTML = `
             <div class="empty-state">
-                <span class="empty-icon">⚠️</span>
-                <p>${error.message || 'A apărut o eroare la generarea recomandărilor'}</p>
+                <span class="empty-icon"><i class="fas fa-exclamation-triangle"></i></span>
+                <p>${error.message || 'An error occurred while generating recommendations'}</p>
             </div>
         `;
     } finally {
@@ -594,28 +546,9 @@ async function generateRecommendations() {
 }
 
 /**
- * Adaugă event listeners pentru click pe produsele recomandate
- * La click se deschide modalul pentru acel produs
- */
-function addRecommendationClickListeners(container) {
-    const items = container.querySelectorAll('.recommendation-item');
-    
-    items.forEach(item => {
-        item.addEventListener('click', async () => {
-            const productId = item.dataset.productId;
-            console.log('📦 Click pe recomandare:', productId);
-            
-            // Deschide modalul pentru noul produs
-            await openProductModal(productId);
-        });
-    });
-}
-
-/**
- * Creează HTML pentru un item de recomandare
- * 
- * @param {object} product - Datele produsului recomandat
- * @returns {string} - HTML-ul itemului
+ * Creates HTML for a recommendation item
+ * @param {object} product - Product data
+ * @returns {string} - Item HTML
  */
 function createRecommendationItem(product) {
     const rating = product.rating ? product.rating.toFixed(1) : 'N/A';
@@ -630,95 +563,87 @@ function createRecommendationItem(product) {
             </div>
             <h4 class="rec-name">${escapeHtml(product.product_name)}</h4>
             <div class="rec-stats">
-                <span>⭐ ${rating}</span>
-                <span>❤️ ${loves}</span>
+                <span><i class="fas fa-star"></i> ${rating}</span>
+                <span><i class="fas fa-heart"></i> ${loves}</span>
             </div>
         </div>
     `;
 }
 
+/**
+ * Adds click listeners for recommended products
+ * Opens modal for that product on click
+ */
+function addRecommendationClickListeners(container) {
+    const items = container.querySelectorAll('.recommendation-item');
+    
+    items.forEach(item => {
+        item.addEventListener('click', async () => {
+            const productId = item.dataset.productId;
+            console.log('Click on recommendation:', productId);
+            await openProductModal(productId);
+        });
+    });
+}
+
 // =============================================================================
-// MODAL EDITARE PROFIL
+// PROFILE MODAL
 // =============================================================================
 
 /**
- * Deschide modalul de editare profil
+ * Opens the profile editing modal
  */
 function openProfileModal() {
-    console.log('🔓 openProfileModal() apelată');
+    console.log('openProfileModal() called');
     
     const modal = document.getElementById('profileModal');
     
     if (!modal) {
-        console.error('❌ Modal profil nu a fost găsit! (id="profileModal")');
-        alert('Eroare: Modal profil nu a fost găsit!');
+        console.error('Profile modal not found!');
+        alert('Error: Profile modal not found!');
         return;
     }
     
-    console.log('✅ Modal găsit, clasele actuale:', modal.className);
-    
-    // ===== RESETARE COMPLETĂ A FORMULARULUI =====
-    
-    // Resetează toate radio buttons pentru gen
+    // Reset form
     document.querySelectorAll('input[name="edit_gender"]').forEach(radio => {
         radio.checked = false;
     });
     
-    // Resetează toate radio buttons pentru interval vârstă
     document.querySelectorAll('input[name="edit_age_range"]').forEach(radio => {
         radio.checked = false;
     });
     
-    // Resetează toate radio buttons pentru tip piele
     document.querySelectorAll('input[name="edit_skin_type"]').forEach(radio => {
         radio.checked = false;
     });
     
-    // Resetează toate checkbox-urile de alergeni comuni
     document.querySelectorAll('input[name="edit_common_allergies"]').forEach(cb => {
         cb.checked = false;
     });
     
-    // Resetează input-ul de alte alergii
     const editAllergiesInput = document.getElementById('editAllergies');
     if (editAllergiesInput) editAllergiesInput.value = '';
     
-    // ===== POPULARE CU DATELE UTILIZATORULUI =====
-    
-    console.log('📊 Date utilizator curent:', currentUser);
-    
-    // Nume
+    // Populate with current user data
     const editNameInput = document.getElementById('editName');
     if (editNameInput) editNameInput.value = currentUser?.name || '';
     
-    // Selectează genul (radio button)
     if (currentUser?.gender) {
         const genderRadio = document.querySelector(`input[name="edit_gender"][value="${currentUser.gender}"]`);
-        if (genderRadio) {
-            genderRadio.checked = true;
-            console.log('✅ Gen setat:', currentUser.gender);
-        }
+        if (genderRadio) genderRadio.checked = true;
     }
     
-    // Selectează intervalul de vârstă (radio button)
     if (currentUser?.age_range) {
-        const ageRangeRadio = document.querySelector(`input[name="edit_age_range"][value="${currentUser.age_range}"]`);
-        if (ageRangeRadio) {
-            ageRangeRadio.checked = true;
-            console.log('✅ Interval vârstă setat:', currentUser.age_range);
-        }
+        const ageRadio = document.querySelector(`input[name="edit_age_range"][value="${currentUser.age_range}"]`);
+        if (ageRadio) ageRadio.checked = true;
     }
     
-    // Selectează tipul de piele
     if (currentUser?.skin_type) {
-        const skinTypeRadio = document.querySelector(`input[name="edit_skin_type"][value="${currentUser.skin_type}"]`);
-        if (skinTypeRadio) {
-            skinTypeRadio.checked = true;
-            console.log('✅ Tip piele setat:', currentUser.skin_type);
-        }
+        const skinRadio = document.querySelector(`input[name="edit_skin_type"][value="${currentUser.skin_type}"]`);
+        if (skinRadio) skinRadio.checked = true;
     }
     
-    // Bifează alergenii comuni existenți și colectează restul
+    // Set allergies
     const commonAllergens = ['alcohol', 'fragrance', 'phenoxyethanol', 'dimethicone', 'limonene', 'linalool', 'propylene glycol', 'salicylic acid', 'retinol', 'paraben'];
     const userAllergies = currentUser?.allergies || [];
     const otherAllergies = [];
@@ -726,6 +651,7 @@ function openProfileModal() {
     userAllergies.forEach(allergy => {
         const allergyLower = allergy.toLowerCase();
         const checkbox = document.querySelector(`input[name="edit_common_allergies"][value="${allergyLower}"]`);
+        
         if (checkbox) {
             checkbox.checked = true;
         } else if (!commonAllergens.includes(allergyLower)) {
@@ -733,107 +659,77 @@ function openProfileModal() {
         }
     });
     
-    // Alte alergii în input text
-    if (editAllergiesInput) editAllergiesInput.value = otherAllergies.join(', ');
+    if (editAllergiesInput && otherAllergies.length > 0) {
+        editAllergiesInput.value = otherAllergies.join(', ');
+    }
     
-    // Afișează modalul
     modal.classList.add('active');
-    
-    console.log('✅ Modal deschis! Clase după adăugare:', modal.className);
 }
 
 /**
- * Închide modalul de editare profil
+ * Closes the profile modal
  */
 function closeProfileModal() {
-    document.getElementById('profileModal').classList.remove('active');
+    const modal = document.getElementById('profileModal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
 }
 
 /**
- * Salvează modificările profilului - COLD START DATA
+ * Saves profile changes
  */
 async function saveProfile(e) {
     e.preventDefault();
     
-    const form = document.getElementById('profileForm');
-    const submitBtn = form.querySelector('button[type="submit"]');
+    const submitBtn = document.querySelector('#profileForm button[type="submit"]');
     
-    // Validare nume
-    const nameValue = document.getElementById('editName').value.trim();
-    if (!nameValue) {
-        showToast('Numele este obligatoriu!', 'error');
-        document.getElementById('editName').focus();
-        return;
-    }
+    const name = document.getElementById('editName')?.value.trim();
+    const gender = document.querySelector('input[name="edit_gender"]:checked')?.value || null;
+    const ageRange = document.querySelector('input[name="edit_age_range"]:checked')?.value || null;
+    const skinType = document.querySelector('input[name="edit_skin_type"]:checked')?.value || null;
     
-    GlowUp.setButtonLoading(submitBtn, true);
-    
-    // Colectăm alergenii comuni (checkboxuri)
     const commonAllergiesCheckboxes = document.querySelectorAll('input[name="edit_common_allergies"]:checked');
     const commonAllergies = Array.from(commonAllergiesCheckboxes).map(cb => cb.value);
     
-    // Colectăm alergiile suplimentare din input text
-    const editAllergiesInput = document.getElementById('editAllergies');
-    const additionalAllergies = editAllergiesInput ? editAllergiesInput.value
+    const additionalAllergiesInput = document.getElementById('editAllergies');
+    const additionalAllergies = additionalAllergiesInput ? additionalAllergiesInput.value
         .split(',')
         .map(a => a.trim().toLowerCase())
         .filter(a => a.length > 0) : [];
     
-    // Combinăm toate alergiile (fără duplicate)
-    const allAllergies = [...new Set([...commonAllergies, ...additionalAllergies])];
+    const allergies = [...new Set([...commonAllergies, ...additionalAllergies])];
     
     const updatedData = {
-        name: nameValue,
-        gender: document.querySelector('input[name="edit_gender"]:checked')?.value || null,
-        age_range: document.querySelector('input[name="edit_age_range"]:checked')?.value || null,
-        skin_type: document.querySelector('input[name="edit_skin_type"]:checked')?.value || null,
-        allergies: allAllergies
+        name,
+        gender,
+        age_range: ageRange,
+        skin_type: skinType,
+        allergies
     };
     
-    console.log('📝 Actualizare profil Cold Start:', updatedData);
+    console.log('Saving profile:', updatedData);
+    
+    GlowUp.setButtonLoading(submitBtn, true);
     
     try {
-        // Încearcă să salveze pe server
         const response = await GlowUp.apiRequest(`/user/${currentUser.id}`, {
             method: 'PUT',
             body: JSON.stringify(updatedData)
         });
         
         if (response.success) {
-            // Actualizează datele locale
+            // Update local user data
             currentUser = { ...currentUser, ...updatedData };
             GlowUp.saveUser(currentUser);
             
-            // Actualizează UI
             updateUserUI();
-            
-            // Reîncarcă recomandările cu noile date
-            loadPersonalRecommendations();
-            
-            showToast('Profilul a fost actualizat cu succes! 🎉', 'success');
             closeProfileModal();
-        } else {
-            throw new Error(response.error || 'Eroare la salvare');
+            showToast('Profile updated successfully!', 'success');
         }
     } catch (error) {
-        console.warn('⚠️ Eroare API, salvare locală:', error);
-        
-        // Fallback: salvează local dacă API-ul nu e disponibil
-        currentUser = { ...currentUser, ...updatedData };
-        GlowUp.saveUser(currentUser);
-        
-        // Actualizează UI oricum
-        updateUserUI();
-        
-        // Încearcă să reîncarce recomandările
-        try {
-            loadPersonalRecommendations();
-        } catch (e) {
-            console.warn('Nu s-au putut reîncărca recomandările');
-        }
-        
-        showToast('Profilul a fost salvat local! 💾', 'success');
-        closeProfileModal();
+        console.error('Error saving profile:', error);
+        showToast('Error updating profile', 'error');
     } finally {
         GlowUp.setButtonLoading(submitBtn, false);
     }
@@ -843,11 +739,8 @@ async function saveProfile(e) {
 // EVENT LISTENERS
 // =============================================================================
 
-/**
- * Inițializează toate event listeners
- */
 function initEventListeners() {
-    // --- User Menu Dropdown ---
+    // User menu toggle
     const userMenuBtn = document.getElementById('userMenuBtn');
     const userMenu = document.querySelector('.user-menu');
     
@@ -857,164 +750,101 @@ function initEventListeners() {
             userMenu.classList.toggle('open');
         });
         
-        // Închide dropdown când se face click în afară
         document.addEventListener('click', () => {
             userMenu.classList.remove('open');
         });
     }
     
-    // --- Logout ---
+    // Logout
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             GlowUp.clearUser();
             GlowUp.redirectTo('index.html');
         });
     }
     
-    // --- Theme Toggle ---
+    // Theme toggle
     const themeToggle = document.getElementById('themeToggle');
-    
-    // Funcție pentru setarea temei (consistentă cu auth page)
-    function setTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-        if (themeToggle) {
-            themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
-        }
-    }
-    
-    // Aplică tema salvată la încărcare
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    setTheme(savedTheme);
-    
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            setTheme(newTheme);
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Update icon
+            const icon = themeToggle.querySelector('i');
+            if (icon) {
+                icon.className = newTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+            }
         });
     }
     
-    // --- Căutare ---
+    // Search
     const searchInput = document.getElementById('searchInput');
     let searchTimeout;
     
     if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
+        searchInput.addEventListener('input', () => {
             clearTimeout(searchTimeout);
-            
             searchTimeout = setTimeout(() => {
                 currentPage = 1;
                 loadProducts(getActiveFilters());
-            }, 300); // Debounce 300ms
-        });
-        
-        // Focus pe search cu Ctrl+K sau Cmd+K (Mac)
-        document.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                e.preventDefault();
-                searchInput.focus();
-                searchInput.select(); // Selectează textul existent
-            }
-            
-            // Escape pentru a ieși din search
-            if (e.key === 'Escape' && document.activeElement === searchInput) {
-                searchInput.blur();
-            }
-        });
-        
-        // Afișează hint la focus
-        searchInput.addEventListener('focus', () => {
-            searchInput.parentElement.classList.add('focused');
-        });
-        
-        searchInput.addEventListener('blur', () => {
-            searchInput.parentElement.classList.remove('focused');
+            }, 500);
         });
     }
     
-    // --- Filtre ---
+    // Filters
     const filterCategory = document.getElementById('filterCategory');
     const filterSkinType = document.getElementById('filterSkinType');
     const filterPrice = document.getElementById('filterPrice');
     const filterInStock = document.getElementById('filterInStock');
-    const resetFilters = document.getElementById('resetFilters');
+    const clearFiltersBtn = document.getElementById('clearFilters');
     
-    // Schimbare categorie
-    if (filterCategory) {
-        filterCategory.addEventListener('change', () => {
-            currentPage = 1;
-            loadProducts(getActiveFilters());
-        });
-    }
+    [filterCategory, filterSkinType, filterInStock].forEach(el => {
+        if (el) {
+            el.addEventListener('change', () => {
+                currentPage = 1;
+                loadProducts(getActiveFilters());
+            });
+        }
+    });
     
-    // Schimbare tip piele
-    if (filterSkinType) {
-        filterSkinType.addEventListener('change', () => {
-            currentPage = 1;
-            loadProducts(getActiveFilters());
-        });
-    }
-    
-    // Schimbare preț
     if (filterPrice) {
-        filterPrice.addEventListener('input', (e) => {
-            document.getElementById('priceValue').textContent = `$${e.target.value}`;
+        const priceValue = document.getElementById('priceValue');
+        filterPrice.addEventListener('input', () => {
+            if (priceValue) priceValue.textContent = `$${filterPrice.value}`;
         });
-        
         filterPrice.addEventListener('change', () => {
             currentPage = 1;
             loadProducts(getActiveFilters());
         });
     }
     
-    // Reset filtre
-    if (resetFilters) {
-        resetFilters.addEventListener('click', () => {
-            console.log('🔄 Resetare filtre...');
-            
-            // Resetează categoria
+    if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener('click', () => {
             if (filterCategory) filterCategory.value = '';
-            
-            // Resetează tipul de piele
             if (filterSkinType) filterSkinType.value = '';
-            
-            // Resetează prețul
             if (filterPrice) {
-                filterPrice.value = 200;
+                filterPrice.value = 500;
                 const priceValue = document.getElementById('priceValue');
-                if (priceValue) priceValue.textContent = '$200';
+                if (priceValue) priceValue.textContent = '$500';
             }
-            
-            // Resetează checkbox "în stoc"
             if (filterInStock) filterInStock.checked = false;
-            
-            // Resetează căutarea
             if (searchInput) searchInput.value = '';
             
-            // Resetează sortarea
-            const sortProducts = document.getElementById('sortProducts');
-            if (sortProducts) sortProducts.value = 'popularity';
-            
-            // Resetează pagina
             currentPage = 1;
-            
-            // Reîncarcă produsele
             loadProducts();
-            
-            // Feedback vizual
-            showToast('Filtrele au fost resetate! 🔄', 'success');
         });
     }
     
-    // --- Sort Products ---
-    const sortProducts = document.getElementById('sortProducts');
-    if (sortProducts) {
-        sortProducts.addEventListener('change', () => {
-            // Sortarea se face client-side pentru simplitate
-            // În producție, ar trebui făcută server-side
-            const sortBy = sortProducts.value;
+    // Sort
+    const sortSelect = document.getElementById('sortProducts');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', () => {
+            const sortBy = sortSelect.value;
             
             productsCache.sort((a, b) => {
                 switch (sortBy) {
@@ -1030,14 +860,14 @@ function initEventListeners() {
                 }
             });
             
-            // Re-renderează
+            // Re-render
             const container = document.getElementById('productsGrid');
             container.innerHTML = productsCache.map(p => createProductCard(p)).join('');
             addCardEventListeners(container);
         });
     }
     
-    // --- Modal Produs ---
+    // Product Modal
     const closeModal = document.getElementById('closeModal');
     const productModal = document.getElementById('productModal');
     const getRecsBtn = document.getElementById('getRecommendationsBtn');
@@ -1058,7 +888,7 @@ function initEventListeners() {
         getRecsBtn.addEventListener('click', generateRecommendations);
     }
     
-    // --- Modal Profil ---
+    // Profile Modal
     const editProfileBtn = document.getElementById('editProfileBtn');
     const openProfileBtn = document.getElementById('openProfile');
     const closeProfileModalBtn = document.getElementById('closeProfileModal');
@@ -1066,7 +896,7 @@ function initEventListeners() {
     const profileModal = document.getElementById('profileModal');
     const profileForm = document.getElementById('profileForm');
     
-    console.log('🔧 Inițializare Modal Profil:', {
+    console.log('Profile Modal init:', {
         editProfileBtn: !!editProfileBtn,
         openProfileBtn: !!openProfileBtn,
         profileModal: !!profileModal,
@@ -1076,22 +906,22 @@ function initEventListeners() {
     if (editProfileBtn) {
         editProfileBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log('📝 Click pe Editează Profil (sidebar)');
+            console.log('Click on Edit Profile (sidebar)');
             openProfileModal();
         });
     } else {
-        console.warn('⚠️ Butonul editProfileBtn nu a fost găsit!');
+        console.warn('editProfileBtn not found!');
     }
     
     if (openProfileBtn) {
         openProfileBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log('📝 Click pe Profilul Meu (dropdown)');
+            console.log('Click on My Profile (dropdown)');
             document.querySelector('.user-menu')?.classList.remove('open');
             openProfileModal();
         });
     } else {
-        console.warn('⚠️ Butonul openProfile nu a fost găsit!');
+        console.warn('openProfile button not found!');
     }
     
     if (closeProfileModalBtn) {
@@ -1114,7 +944,7 @@ function initEventListeners() {
         profileForm.addEventListener('submit', saveProfile);
     }
     
-    // --- Escape key pentru modal-uri ---
+    // Escape key for modals
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             closeProductModal();
@@ -1124,9 +954,8 @@ function initEventListeners() {
 }
 
 /**
- * Obține filtrele active
- * 
- * @returns {object} - Obiect cu filtrele
+ * Gets active filters
+ * @returns {object} - Filter object
  */
 function getActiveFilters() {
     const filters = {};
@@ -1143,20 +972,19 @@ function getActiveFilters() {
     if (maxPrice && maxPrice !== '500') filters.max_price = parseFloat(maxPrice);
     if (inStock) filters.in_stock = true;
     
-    console.log('🔍 Filtre active:', filters);
+    console.log('Active filters:', filters);
     
     return filters;
 }
 
 // =============================================================================
-// UTILITĂȚI
+// UTILITIES
 // =============================================================================
 
 /**
- * Formatează un număr mare (ex: 50000 -> 50K)
- * 
- * @param {number} num - Numărul de formatat
- * @returns {string} - Numărul formatat
+ * Formats a large number (e.g., 50000 -> 50K)
+ * @param {number} num - Number to format
+ * @returns {string} - Formatted number
  */
 function formatNumber(num) {
     if (num >= 1000000) {
@@ -1169,10 +997,9 @@ function formatNumber(num) {
 }
 
 /**
- * Escape HTML pentru prevenirea XSS
- * 
- * @param {string} text - Textul de escapiat
- * @returns {string} - Textul sigur
+ * Escapes HTML to prevent XSS
+ * @param {string} text - Text to escape
+ * @returns {string} - Safe text
  */
 function escapeHtml(text) {
     if (!text) return '';
@@ -1189,55 +1016,50 @@ function escapeHtml(text) {
 }
 
 /**
- * Parse highlights din string (poate fi JSON array sau string simplu)
- * 
- * @param {string} highlights - String-ul de parseat
- * @returns {array} - Array de highlights
+ * Parses highlights from string (can be JSON array or simple string)
+ * @param {string} highlights - String to parse
+ * @returns {array} - Array of highlights
  */
 function parseHighlights(highlights) {
     if (!highlights) return [];
     
     try {
-        // Încearcă să parseze ca JSON
         const parsed = JSON.parse(highlights.replace(/'/g, '"'));
         return Array.isArray(parsed) ? parsed : [highlights];
     } catch {
-        // Dacă nu e JSON valid, returnează ca array cu un element
         return [highlights];
     }
 }
 
 /**
- * Obține label-ul pentru tipul de piele
- * 
- * @param {string} skinType - Codul tipului de piele
- * @returns {string} - Label-ul în română
+ * Gets label for skin type
+ * @param {string} skinType - Skin type code
+ * @returns {string} - Label
  */
 function getSkinTypeLabel(skinType) {
     const labels = {
-        normal: 'Normală',
-        dry: 'Uscată',
-        oily: 'Grasă',
-        combination: 'Mixtă',
-        all: 'Toate tipurile'
+        normal: 'Normal',
+        dry: 'Dry',
+        oily: 'Oily',
+        combination: 'Combination',
+        all: 'All types'
     };
     return labels[skinType?.toLowerCase()] || skinType || '-';
 }
 
 /**
- * Afișează un toast notification
- * 
- * @param {string} message - Mesajul de afișat
- * @param {string} type - Tipul (success, error, warning)
+ * Shows a toast notification
+ * @param {string} message - Message to display
+ * @param {string} type - Type (success, error, warning)
  */
 function showToast(message, type = 'info') {
     const container = document.getElementById('toastContainer');
     
     const icons = {
-        success: '✅',
-        error: '❌',
-        warning: '⚠️',
-        info: 'ℹ️'
+        success: '<i class="fas fa-check-circle"></i>',
+        error: '<i class="fas fa-times-circle"></i>',
+        warning: '<i class="fas fa-exclamation-triangle"></i>',
+        info: '<i class="fas fa-info-circle"></i>'
     };
     
     const toast = document.createElement('div');
@@ -1245,7 +1067,7 @@ function showToast(message, type = 'info') {
     toast.innerHTML = `
         <span class="toast-icon">${icons[type]}</span>
         <span class="toast-message">${escapeHtml(message)}</span>
-        <button class="toast-close">×</button>
+        <button class="toast-close"><i class="fas fa-times"></i></button>
     `;
     
     container.appendChild(toast);
@@ -1255,7 +1077,7 @@ function showToast(message, type = 'info') {
         toast.remove();
     });
     
-    // Auto-remove după 5 secunde
+    // Auto-remove after 5 seconds
     setTimeout(() => {
         if (toast.parentElement) {
             toast.remove();
@@ -1264,11 +1086,10 @@ function showToast(message, type = 'info') {
 }
 
 // =============================================================================
-// INIȚIALIZARE
+// INITIALIZATION
 // =============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Verifică dacă suntem pe pagina dashboard
     const isDashboard = document.body.classList.contains('dashboard-page');
     
     if (isDashboard) {

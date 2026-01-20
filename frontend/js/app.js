@@ -1,30 +1,29 @@
 /**
  * ============================================================================
- * GLOWUP - APLICAȚIE JAVASCRIPT PRINCIPALĂ
+ * GLOWUP - MAIN JAVASCRIPT APPLICATION
  * ============================================================================
- * Acest fișier gestionează:
- * - Autentificare (Login & Register)
- * - Gestionare sesiune utilizator
- * - Funcții utilitare globale
+ * This file handles:
+ * - Authentication (Login & Register)
+ * - User session management
+ * - Global utility functions
  * ============================================================================
  */
 
 // =============================================================================
-// CONFIGURARE API
+// API CONFIGURATION
 // =============================================================================
 
-// const API_BASE_URL = 'http://localhost:5003/api';
 const API_BASE_URL = 'https://sr-cosmetice.onrender.com/api';
 
 // =============================================================================
-// OBIECT GLOBAL GLOWUP - Disponibil pentru toate fișierele JS
+// GLOBAL GLOWUP OBJECT - Available for all JS files
 // =============================================================================
 
 window.GlowUp = {
     API_BASE_URL: API_BASE_URL,
     
     /**
-     * Funcție pentru a face cereri HTTP către API
+     * Makes HTTP requests to the API
      */
     apiRequest: async function(endpoint, options = {}) {
         const url = `${API_BASE_URL}${endpoint}`;
@@ -50,25 +49,25 @@ window.GlowUp = {
             const data = await response.json();
             
             if (!response.ok) {
-                throw new Error(data.error || 'A apărut o eroare');
+                throw new Error(data.error || 'An error occurred');
             }
             
             return data;
         } catch (error) {
-            console.error(`Eroare API [${endpoint}]:`, error);
+            console.error(`API Error [${endpoint}]:`, error);
             throw error;
         }
     },
     
     /**
-     * Salvează datele utilizatorului în localStorage
+     * Saves user data to localStorage
      */
     saveUser: function(userData) {
         localStorage.setItem('glowup_user', JSON.stringify(userData));
     },
     
     /**
-     * Obține datele utilizatorului din localStorage
+     * Gets user data from localStorage
      */
     getUser: function() {
         const userData = localStorage.getItem('glowup_user');
@@ -76,28 +75,28 @@ window.GlowUp = {
     },
     
     /**
-     * Șterge datele utilizatorului (logout)
+     * Clears user data (logout)
      */
     clearUser: function() {
         localStorage.removeItem('glowup_user');
     },
     
     /**
-     * Verifică dacă utilizatorul este autentificat
+     * Checks if user is authenticated
      */
     isLoggedIn: function() {
         return this.getUser() !== null;
     },
     
     /**
-     * Redirecționează către o altă pagină
+     * Redirects to another page
      */
     redirectTo: function(page) {
         window.location.href = page;
     },
     
     /**
-     * Afișează un mesaj în formularul specificat
+     * Shows a message in the specified form
      */
     showMessage: function(elementId, message, type = 'error') {
         const messageEl = document.getElementById(elementId);
@@ -113,7 +112,7 @@ window.GlowUp = {
     },
     
     /**
-     * Ascunde un mesaj
+     * Hides a message
      */
     hideMessage: function(elementId) {
         const messageEl = document.getElementById(elementId);
@@ -123,7 +122,7 @@ window.GlowUp = {
     },
     
     /**
-     * Afișează/Ascunde loading-ul pe un buton
+     * Shows/Hides loading state on a button
      */
     setButtonLoading: function(button, loading) {
         if (!button) return;
@@ -143,7 +142,7 @@ window.GlowUp = {
     },
     
     /**
-     * Obține inițialele din nume
+     * Gets initials from name
      */
     getInitials: function(name) {
         if (!name) return 'U';
@@ -156,14 +155,14 @@ window.GlowUp = {
     }
 };
 
-console.log('✅ GlowUp object initialized:', Object.keys(window.GlowUp));
+console.log('GlowUp object initialized:', Object.keys(window.GlowUp));
 
 // =============================================================================
-// FUNCȚII PENTRU PAGINA DE AUTH
+// AUTH PAGE FUNCTIONS
 // =============================================================================
 
 /**
- * Evaluează puterea parolei
+ * Evaluates password strength
  */
 function evaluatePasswordStrength(password) {
     let score = 0;
@@ -180,22 +179,22 @@ function evaluatePasswordStrength(password) {
 }
 
 /**
- * Inițializează funcționalitatea paginii de autentificare
+ * Initializes auth page functionality
  */
 function initAuthPage() {
-    // Verifică dacă utilizatorul este deja logat
+    // Check if user is already logged in
     if (GlowUp.isLoggedIn()) {
         GlowUp.redirectTo('dashboard.html');
         return;
     }
     
-    // Referințe către elemente DOM
+    // DOM element references
     const tabButtons = document.querySelectorAll('.tab-btn');
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
     const togglePasswordBtns = document.querySelectorAll('.toggle-password');
     
-    // --- Funcție pentru schimbarea tab-urilor ---
+    // Tab switching function
     function switchToTab(tabName) {
         tabButtons.forEach(b => {
             b.classList.toggle('active', b.dataset.tab === tabName);
@@ -210,14 +209,14 @@ function initAuthPage() {
         }
     }
     
-    // --- Tab-uri Login/Register ---
+    // Login/Register tabs
     tabButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             switchToTab(btn.dataset.tab);
         });
     });
     
-    // --- Link-uri "Cont nou" / "Ai deja cont" ---
+    // "New account" / "Already have account" links
     const goToRegisterBtn = document.getElementById('goToRegister');
     const goToLoginBtn = document.getElementById('goToLogin');
     
@@ -229,46 +228,41 @@ function initAuthPage() {
         goToLoginBtn.addEventListener('click', () => switchToTab('login'));
     }
     
-    // --- Toggle vizibilitate parolă ---
+    // Toggle password visibility
     togglePasswordBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            const inputWrapper = btn.closest('.input-wrapper');
-            const input = inputWrapper.querySelector('input[type="password"], input[type="text"]');
-            const eyeIcon = btn.querySelector('.eye-icon') || btn;
+            const input = btn.previousElementSibling;
+            const icon = btn.querySelector('i');
             
             if (input.type === 'password') {
                 input.type = 'text';
-                eyeIcon.textContent = '🙈';
-                btn.classList.add('visible');
-                btn.title = 'Ascunde parola';
+                if (icon) {
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                }
             } else {
                 input.type = 'password';
-                eyeIcon.textContent = '👁️';
-                btn.classList.remove('visible');
-                btn.title = 'Arată parola';
+                if (icon) {
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
             }
         });
     });
     
-    // --- Modal "Am uitat parola" ---
+    // Forgot password modal
     const forgotPasswordLink = document.getElementById('forgotPasswordLink');
-    const forgotPasswordModal = document.getElementById('forgotPasswordModal');
+    const forgotModal = document.getElementById('forgotPasswordModal');
     const closeForgotModal = document.getElementById('closeForgotModal');
-    const backToLoginFromForgot = document.getElementById('backToLoginFromForgot');
-    const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+    const cancelForgotBtn = document.getElementById('cancelForgot');
+    const forgotForm = document.getElementById('forgotForm');
     
     function openForgotModal() {
-        if (forgotPasswordModal) {
-            forgotPasswordModal.classList.add('active');
-        }
+        if (forgotModal) forgotModal.classList.add('active');
     }
     
     function closeForgotModalFunc() {
-        if (forgotPasswordModal) {
-            forgotPasswordModal.classList.remove('active');
-            if (forgotPasswordForm) forgotPasswordForm.reset();
-            GlowUp.hideMessage('forgotMessage');
-        }
+        if (forgotModal) forgotModal.classList.remove('active');
     }
     
     if (forgotPasswordLink) {
@@ -282,33 +276,32 @@ function initAuthPage() {
         closeForgotModal.addEventListener('click', closeForgotModalFunc);
     }
     
-    if (backToLoginFromForgot) {
-        backToLoginFromForgot.addEventListener('click', closeForgotModalFunc);
+    if (cancelForgotBtn) {
+        cancelForgotBtn.addEventListener('click', closeForgotModalFunc);
     }
     
-    if (forgotPasswordModal) {
-        forgotPasswordModal.addEventListener('click', (e) => {
-            if (e.target === forgotPasswordModal) {
+    if (forgotModal) {
+        forgotModal.addEventListener('click', (e) => {
+            if (e.target === forgotModal) {
                 closeForgotModalFunc();
             }
         });
     }
     
-    // Submit forgot password form
-    if (forgotPasswordForm) {
-        forgotPasswordForm.addEventListener('submit', async (e) => {
+    if (forgotForm) {
+        forgotForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
-            const submitBtn = forgotPasswordForm.querySelector('button[type="submit"]');
+            const submitBtn = forgotForm.querySelector('button[type="submit"]');
             const email = document.getElementById('forgotEmail').value;
             
             GlowUp.setButtonLoading(submitBtn, true);
             
-            // Simulăm trimiterea email-ului
+            // Simulate email sending
             setTimeout(() => {
                 GlowUp.setButtonLoading(submitBtn, false);
                 GlowUp.showMessage('forgotMessage', 
-                    `📧 Dacă există un cont cu adresa ${email}, vei primi un email cu instrucțiuni de resetare.`, 
+                    `If an account exists with ${email}, you will receive reset instructions.`, 
                     'success'
                 );
                 
@@ -319,7 +312,7 @@ function initAuthPage() {
         });
     }
     
-    // --- Toggle Theme (Light/Dark) ---
+    // Theme toggle (Light/Dark)
     const themeToggle = document.getElementById('themeToggleAuth');
     
     function setTheme(theme) {
@@ -333,7 +326,7 @@ function initAuthPage() {
         setTheme(newTheme);
     }
     
-    // Aplică tema salvată
+    // Apply saved theme
     const savedTheme = localStorage.getItem('theme') || 'light';
     setTheme(savedTheme);
     
@@ -341,7 +334,7 @@ function initAuthPage() {
         themeToggle.addEventListener('click', toggleTheme);
     }
     
-    // --- Indicator putere parolă ---
+    // Password strength indicator
     const registerPasswordInput = document.getElementById('registerPassword');
     const strengthBar = document.querySelector('.strength-bar');
     const strengthText = document.querySelector('.strength-text');
@@ -360,15 +353,15 @@ function initAuthPage() {
             strengthBar.className = `strength-bar ${strength}`;
             
             const texts = {
-                weak: 'Slabă',
-                medium: 'Medie',
-                strong: 'Puternică'
+                weak: 'Weak',
+                medium: 'Medium',
+                strong: 'Strong'
             };
             strengthText.textContent = texts[strength];
         });
     }
     
-    // --- Formularul de LOGIN ---
+    // LOGIN form
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -387,27 +380,27 @@ function initAuthPage() {
                 
                 if (response.success) {
                     GlowUp.saveUser(response.user);
-                    GlowUp.showMessage('loginMessage', 'Autentificare reușită! Redirecționare...', 'success');
+                    GlowUp.showMessage('loginMessage', 'Login successful! Redirecting...', 'success');
                     
                     setTimeout(() => {
                         GlowUp.redirectTo('dashboard.html');
                     }, 1000);
                 }
             } catch (error) {
-                GlowUp.showMessage('loginMessage', error.message || 'Eroare la autentificare');
+                GlowUp.showMessage('loginMessage', error.message || 'Authentication error');
             } finally {
                 GlowUp.setButtonLoading(submitBtn, false);
             }
         });
     }
     
-    // --- Wizard Register - Navigare între pași ---
+    // Register wizard - step navigation
     const nextButtons = document.querySelectorAll('.btn-next');
     const prevButtons = document.querySelectorAll('.btn-prev');
     const steps = document.querySelectorAll('.register-steps .step');
     const stepContents = document.querySelectorAll('.form-step');
     
-    console.log('🔧 Wizard init:', {
+    console.log('Wizard init:', {
         nextButtons: nextButtons.length,
         prevButtons: prevButtons.length,
         steps: steps.length,
@@ -415,7 +408,7 @@ function initAuthPage() {
     });
     
     function goToStep(stepNumber) {
-        console.log('📍 Navigare la pasul:', stepNumber);
+        console.log('Navigating to step:', stepNumber);
         
         steps.forEach((step, index) => {
             step.classList.toggle('active', index < stepNumber);
@@ -425,61 +418,56 @@ function initAuthPage() {
         stepContents.forEach(content => {
             const isActive = content.dataset.step === stepNumber.toString();
             content.classList.toggle('active', isActive);
-            console.log(`   Step ${content.dataset.step}: ${isActive ? 'ACTIVE' : 'hidden'}`);
         });
     }
     
     nextButtons.forEach(btn => {
-        console.log('➡️ Atașez listener pentru btn-next:', btn.dataset.next);
         btn.addEventListener('click', (e) => {
             e.preventDefault();
             const nextStep = parseInt(btn.dataset.next);
-            console.log('➡️ Click pe Next, merg la pasul:', nextStep);
             goToStep(nextStep);
         });
     });
     
     prevButtons.forEach(btn => {
-        console.log('⬅️ Atașez listener pentru btn-prev:', btn.dataset.prev);
         btn.addEventListener('click', (e) => {
             e.preventDefault();
             const prevStep = parseInt(btn.dataset.prev);
-            console.log('⬅️ Click pe Prev, merg la pasul:', prevStep);
             goToStep(prevStep);
         });
     });
     
-    // --- Formularul de REGISTER ---
+    // REGISTER form
     if (registerForm) {
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const submitBtn = registerForm.querySelector('button[type="submit"]');
             
-            // Colectăm datele din toate cele 3 pași
+            // Collect data from all 3 steps
             const name = document.getElementById('registerName').value.trim();
             const email = document.getElementById('registerEmail').value.trim();
             const password = document.getElementById('registerPassword').value;
             
-            // Date Cold Start - Pasul 2
+            // Cold Start data - Step 2
             const gender = document.querySelector('input[name="gender"]:checked')?.value || null;
             const ageRange = document.querySelector('input[name="age_range"]:checked')?.value || null;
             
-            // Date Cold Start - Pasul 3
+            // Cold Start data - Step 3
             const skinType = document.querySelector('input[name="skin_type"]:checked')?.value || null;
             
-            // Colectăm alergenii comuni (checkboxuri)
+            // Collect common allergens (checkboxes)
             const commonAllergiesCheckboxes = document.querySelectorAll('input[name="common_allergies"]:checked');
             const commonAllergies = Array.from(commonAllergiesCheckboxes).map(cb => cb.value);
             
-            // Colectăm alergiile suplimentare din input text
+            // Collect additional allergies from text input
             const additionalAllergiesInput = document.getElementById('additionalAllergies');
             const additionalAllergies = additionalAllergiesInput ? additionalAllergiesInput.value
                 .split(',')
                 .map(a => a.trim().toLowerCase())
                 .filter(a => a.length > 0) : [];
             
-            // Combinăm toate alergiile (fără duplicate)
+            // Combine all allergies (no duplicates)
             const allergies = [...new Set([...commonAllergies, ...additionalAllergies])];
             
             const userData = {
@@ -492,7 +480,7 @@ function initAuthPage() {
                 allergies
             };
             
-            console.log('📝 Date înregistrare (Cold Start):', userData);
+            console.log('Registration data (Cold Start):', userData);
             
             GlowUp.setButtonLoading(submitBtn, true);
             
@@ -503,7 +491,7 @@ function initAuthPage() {
                 });
                 
                 if (response.success) {
-                    GlowUp.showMessage('registerMessage', 'Cont creat cu succes! Te poți autentifica acum.', 'success');
+                    GlowUp.showMessage('registerMessage', 'Account created successfully! You can now log in.', 'success');
                     
                     setTimeout(() => {
                         switchToTab('login');
@@ -512,7 +500,7 @@ function initAuthPage() {
                     }, 2000);
                 }
             } catch (error) {
-                GlowUp.showMessage('registerMessage', error.message || 'Eroare la înregistrare');
+                GlowUp.showMessage('registerMessage', error.message || 'Registration error');
             } finally {
                 GlowUp.setButtonLoading(submitBtn, false);
             }
@@ -521,11 +509,11 @@ function initAuthPage() {
 }
 
 // =============================================================================
-// INIȚIALIZARE LA ÎNCĂRCAREA PAGINII
+// PAGE LOAD INITIALIZATION
 // =============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Verifică pe ce pagină suntem
+    // Check which page we're on
     const isAuthPage = document.getElementById('loginForm') !== null;
     
     if (isAuthPage) {
