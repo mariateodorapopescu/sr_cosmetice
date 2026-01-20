@@ -1,0 +1,9 @@
+flask
+psycopg2-binary
+reportlab
+flask-cors
+gunicorn
+Flask-SQLAlchemy==3.0.5
+pandas
+scikit-learn
+numpy

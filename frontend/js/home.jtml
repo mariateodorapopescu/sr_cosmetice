@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowUp | Recomandări Cosmetice Personalizate</title>
+    
+    <!-- Google Fonts - Fonturi elegante -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="auth-page">
+    
+    <!-- ============================================
+         BACKGROUND DECORATIV
+         ============================================ -->
+    <div class="bg-decoration">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
+    </div>
+
+    <!-- ============================================
+         CONTAINER PRINCIPAL AUTENTIFICARE
+         ============================================ -->
+    <main class="auth-container">
+        
+        <!-- SECȚIUNEA STÂNGA - Branding -->
+        <section class="auth-branding">
+            <div class="brand-content">
+                <div class="logo">
+                    <span class="logo-icon">✨</span>
+                    <h1>GlowUp</h1>
+                </div>
+                <p class="tagline">Descoperă produsele cosmetice perfecte pentru tine</p>
+                
+                <div class="features-list">
+                    <div class="feature">
+                        <span class="feature-icon">🎯</span>
+                        <span>Recomandări personalizate AI</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">🧴</span>
+                        <span>Peste 1500+ produse analizate</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">💎</span>
+                        <span>Potrivite pentru tipul tău de piele</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Imagine decorativă sau pattern -->
+            <div class="brand-illustration">
+                <div class="floating-elements">
+                    <div class="float-item item-1">🌸</div>
+                    <div class="float-item item-2">💄</div>
+                    <div class="float-item item-3">✨</div>
+                    <div class="float-item item-4">🧴</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECȚIUNEA DREAPTA - Formular -->
+        <section class="auth-forms">
+            
+            <!-- Tab-uri Login / Register -->
+            <div class="auth-tabs">
+                <button class="tab-btn active" data-tab="login">Autentificare</button>
+                <button class="tab-btn" data-tab="register">Cont Nou</button>
+                <div class="tab-indicator"></div>
+            </div>
+
+            <!-- ===== FORMULAR LOGIN ===== -->
+            <form id="loginForm" class="auth-form active">
+                <h2>Bine ai revenit! 👋</h2>
+                <p class="form-subtitle">Conectează-te pentru a vedea recomandările tale</p>
+                
+                <div class="input-group">
+                    <label for="loginEmail">Email</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">📧</span>
+                        <input 
+                            type="email" 
+                            id="loginEmail" 
+                            name="email" 
+                            placeholder="exemplu@email.com"
+                            required
+                            autocomplete="email"
+                        >
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="loginPassword">Parolă</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔐</span>
+                        <input 
+                            type="password" 
+                            id="loginPassword" 
+                            name="password" 
+                            placeholder="Parola ta"
+                            required
+                            autocomplete="current-password"
+                        >
+                        <button type="button" class="toggle-password" aria-label="Arată parola">
+                            👁️
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" id="rememberMe">
+                        <span class="checkmark"></span>
+                        <span>Ține-mă minte</span>
+                    </label>
+                    <a href="#" class="forgot-password">Ai uitat parola?</a>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <span class="btn-text">Conectare</span>
+                    <span class="btn-loader" hidden></span>
+                </button>
+                
+                <!-- Mesaj eroare/succes -->
+                <div id="loginMessage" class="form-message" hidden></div>
+            </form>
+
+            <!-- ===== FORMULAR REGISTER ===== -->
+            <form id="registerForm" class="auth-form">
+                <h2>Creează Cont ✨</h2>
+                <p class="form-subtitle">Completează profilul pentru recomandări personalizate</p>
+                
+                <!-- Pași pentru register (wizard) -->
+                <div class="register-steps">
+                    <div class="step active" data-step="1">
+                        <span class="step-number">1</span>
+                        <span class="step-label">Cont</span>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step" data-step="2">
+                        <span class="step-number">2</span>
+                        <span class="step-label">Profil</span>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step" data-step="3">
+                        <span class="step-number">3</span>
+                        <span class="step-label">Piele</span>
+                    </div>
+                </div>
+
+                <!-- PASUL 1: Date Cont -->
+                <div class="form-step active" data-step="1">
+                    <div class="input-group">
+                        <label for="registerName">Numele tău</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">👤</span>
+                            <input 
+                                type="text" 
+                                id="registerName" 
+                                name="name" 
+                                placeholder="Maria Popescu"
+                                required
+                                autocomplete="name"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="registerEmail">Email</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📧</span>
+                            <input 
+                                type="email" 
+                                id="registerEmail" 
+                                name="email" 
+                                placeholder="email@exemplu.com"
+                                required
+                                autocomplete="email"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="registerPassword">Parolă</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔐</span>
+                            <input 
+                                type="password" 
+                                id="registerPassword" 
+                                name="password" 
+                                placeholder="Minim 6 caractere"
+                                required
+                                minlength="6"
+                                autocomplete="new-password"
+                            >
+                            <button type="button" class="toggle-password" aria-label="Arată parola">
+                                👁️
+                            </button>
+                        </div>
+                        <!-- Indicator putere parolă -->
+                        <div class="password-strength">
+                            <div class="strength-bar"></div>
+                            <span class="strength-text"></span>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn btn-primary btn-next" data-next="2">
+                        Continuă
+                        <span class="btn-arrow">→</span>
+                    </button>
+                </div>
+
+                <!-- PASUL 2: Informații Personale (Cold Start Data) -->
+                <div class="form-step" data-step="2">
+                    <div class="cold-start-info">
+                        <span class="info-icon">💡</span>
+                        <p>Aceste informații ne ajută să îți oferim <strong>recomandări personalizate</strong> încă de la prima utilizare!</p>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="registerGender">Gen</label>
+                        <div class="gender-options">
+                            <label class="gender-option">
+                                <input type="radio" name="gender" value="female">
+                                <div class="option-card small">
+                                    <span class="option-icon">👩</span>
+                                    <span class="option-title">Feminin</span>
+                                </div>
+                            </label>
+                            <label class="gender-option">
+                                <input type="radio" name="gender" value="male">
+                                <div class="option-card small">
+                                    <span class="option-icon">👨</span>
+                                    <span class="option-title">Masculin</span>
+                                </div>
+                            </label>
+                            <label class="gender-option">
+                                <input type="radio" name="gender" value="other">
+                                <div class="option-card small">
+                                    <span class="option-icon">🧑</span>
+                                    <span class="option-title">Altul</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Interval de vârstă</label>
+                        <p class="input-hint-top">Ne ajută să estimăm nevoile pielii (hidratare, anti-aging)</p>
+                        <div class="age-range-options">
+                            <label class="age-option">
+                                <input type="radio" name="age_range" value="13-17">
+                                <div class="option-pill">13-17 ani</div>
+                            </label>
+                            <label class="age-option">
+                                <input type="radio" name="age_range" value="18-25">
+                                <div class="option-pill">18-25 ani</div>
+                            </label>
+                            <label class="age-option">
+                                <input type="radio" name="age_range" value="26-35">
+                                <div class="option-pill">26-35 ani</div>
+                            </label>
+                            <label class="age-option">
+                                <input type="radio" name="age_range" value="36-45">
+                                <div class="option-pill">36-45 ani</div>
+                            </label>
+                            <label class="age-option">
+                                <input type="radio" name="age_range" value="46-55">
+                                <div class="option-pill">46-55 ani</div>
+                            </label>
+                            <label class="age-option">
+                                <input type="radio" name="age_range" value="55+">
+                                <div class="option-pill">55+ ani</div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="step-buttons">
+                        <button type="button" class="btn btn-secondary btn-prev" data-prev="1">
+                            <span class="btn-arrow">←</span>
+                            Înapoi
+                        </button>
+                        <button type="button" class="btn btn-primary btn-next" data-next="3">
+                            Continuă
+                            <span class="btn-arrow">→</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PASUL 3: Tip Piele și Alergii (Cold Start - Filtrare) -->
+                <div class="form-step" data-step="3">
+                    <div class="input-group">
+                        <label>Tipul tău de piele</label>
+                        <p class="input-hint-top">Vom recomanda doar produse compatibile cu tipul tău de piele</p>
+                        <div class="skin-type-options">
+                            <label class="skin-option">
+                                <input type="radio" name="skin_type" value="Normal">
+                                <div class="option-card">
+                                    <span class="option-icon">😊</span>
+                                    <span class="option-title">Normală</span>
+                                    <span class="option-desc">Echilibrată, fără probleme majore</span>
+                                </div>
+                            </label>
+                            <label class="skin-option">
+                                <input type="radio" name="skin_type" value="Dry">
+                                <div class="option-card">
+                                    <span class="option-icon">🏜️</span>
+                                    <span class="option-title">Uscată</span>
+                                    <span class="option-desc">Simte strânsă, descuamată, necesită hidratare</span>
+                                </div>
+                            </label>
+                            <label class="skin-option">
+                                <input type="radio" name="skin_type" value="Oily">
+                                <div class="option-card">
+                                    <span class="option-icon">✨</span>
+                                    <span class="option-title">Grasă</span>
+                                    <span class="option-desc">Lucioasă, pori vizibili, predispusă la acnee</span>
+                                </div>
+                            </label>
+                            <label class="skin-option">
+                                <input type="radio" name="skin_type" value="Combination">
+                                <div class="option-card">
+                                    <span class="option-icon">🎭</span>
+                                    <span class="option-title">Mixtă</span>
+                                    <span class="option-desc">Zona T grasă, obraji normali sau uscați</span>
+                                </div>
+                            </label>
+                            <label class="skin-option">
+                                <input type="radio" name="skin_type" value="Sensitive">
+                                <div class="option-card">
+                                    <span class="option-icon">🌸</span>
+                                    <span class="option-title">Sensibilă</span>
+                                    <span class="option-desc">Reacționează ușor, roșeață, iritații</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Alergii la ingrediente</label>
+                        <p class="input-hint-top">⚠️ Vom exclude produsele care conțin acești alergeni</p>
+                        
+                        <!-- Alergeni comuni cu checkboxuri -->
+                        <div class="common-allergens">
+                            <label class="allergen-checkbox">
+                                <input type="checkbox" name="common_allergies" value="parabeni">
+                                <span class="checkmark"></span>
+                                <span class="allergen-name">Parabeni</span>
+                            </label>
+                            <label class="allergen-checkbox">
+                                <input type="checkbox" name="common_allergies" value="parfum">
+                                <span class="checkmark"></span>
+                                <span class="allergen-name">Parfum / Fragrance</span>
+                            </label>
+                            <label class="allergen-checkbox">
+                                <input type="checkbox" name="common_allergies" value="sulfati">
+                                <span class="checkmark"></span>
+                                <span class="allergen-name">Sulfați (SLS/SLES)</span>
+                            </label>
+                            <label class="allergen-checkbox">
+                                <input type="checkbox" name="common_allergies" value="alcool">
+                                <span class="checkmark"></span>
+                                <span class="allergen-name">Alcool (Denat.)</span>
+                            </label>
+                            <label class="allergen-checkbox">
+                                <input type="checkbox" name="common_allergies" value="siliconi">
+                                <span class="checkmark"></span>
+                                <span class="allergen-name">Siliconi</span>
+                            </label>
+                            <label class="allergen-checkbox">
+                                <input type="checkbox" name="common_allergies" value="retinol">
+                                <span class="checkmark"></span>
+                                <span class="allergen-name">Retinol</span>
+                            </label>
+                        </div>
+                        
+                        <!-- Input pentru alergii suplimentare -->
+                        <div class="input-wrapper" style="margin-top: 1rem;">
+                            <span class="input-icon">➕</span>
+                            <input 
+                                type="text" 
+                                id="registerAllergies" 
+                                name="allergies" 
+                                placeholder="Alte alergii (separate prin virgulă)"
+                            >
+                        </div>
+                        <span class="input-hint">Exemplu: lanolină, vitamina E, aloe vera</span>
+                    </div>
+                    
+                    <div class="terms-checkbox">
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" id="acceptTerms" required>
+                            <span class="checkmark"></span>
+                            <span>Accept <a href="#" class="link">Termenii și Condițiile</a></span>
+                        </label>
+                    </div>
+                    
+                    <div class="step-buttons">
+                        <button type="button" class="btn btn-secondary btn-prev" data-prev="2">
+                            <span class="btn-arrow">←</span>
+                            Înapoi
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <span class="btn-text">Creează Contul</span>
+                            <span class="btn-loader" hidden></span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Mesaj eroare/succes -->
+                <div id="registerMessage" class="form-message" hidden></div>
+            </form>
+
+        </section>
+    </main>
+
+    <!-- Footer minim -->
+    <footer class="auth-footer">
+        <p>© 2024 GlowUp. Proiect Sisteme de Recomandare.</p>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
